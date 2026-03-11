@@ -1,0 +1,39 @@
+# Dataset and archives
+Dataset/
+archive/
+
+# Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+Backend/venv/
+Backend/venv_312/
+.venv/
+venv/
+ENV/
+
+# Models and generated files
+*.h5
+*.keras
+Backend/class_names.txt
+
+# Node / Frontend
+node_modules/
+Frontend/node_modules/
+dist/
+Frontend/dist/
+.eslintcache
+
+# Environment variables
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
