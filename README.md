@@ -79,19 +79,49 @@ Open `http://localhost:5173` in your browser.
 ```text
 LeafGuard/
 ├── Backend/
-│   ├── main.py              # FastAPI Application
-│   ├── train.py             # Model Training Script
-│   ├── requirements.txt     # Python Dependencies
-│   └── class_names.txt      # Generated Class Mappings
+│   ├── main.py                # FastAPI Application
+│   ├── train.py               # Model Training Script
+│   ├── requirements.txt       # Python Dependencies
+│   └── class_names.txt        # Generated Class Mappings
+│
 ├── Frontend/
+│   ├── public/                # Static assets
 │   ├── src/
-│   │   ├── pages/
-│   │   │   └── AnalyzePage.tsx # Core Analysis UI
-│   │   └── components/      # UI Components
-│   └── package.json         # Node Dependencies
-├── archive/
-│   └── Dataset/             # Training Dataset
-└── .gitignore               # Environment Exclusions
+│   │   ├── assets/            # Images, icons, and static files
+│   │   │
+│   │   ├── components/        # Reusable UI components
+│   │   │   ├── ui/            # UI utility components
+│   │   │   ├── AboutSection.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── HowItWorks.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── PageSkeleton.tsx
+│   │   │   ├── ResultSection.tsx
+│   │   │   └── UploadSection.tsx
+│   │   │
+│   │   ├── lib/
+│   │   │   └── utils.ts       # Utility helper functions
+│   │   │
+│   │   ├── pages/             # Application pages
+│   │   │   ├── AnalyzePage.tsx
+│   │   │   ├── HomePage.tsx
+│   │   │   ├── HowItWorksPage.tsx
+│   │   │   └── TechnologyPage.tsx
+│   │   │
+│   │   ├── App.tsx            # Root React component
+│   │   ├── App.css            # Global styles
+│   │   ├── index.css          # Tailwind / base styles
+│   │   └── main.tsx           # Vite entry point
+│   │
+│   ├── index.html             # HTML template
+│   ├── eslint.config.js       # ESLint configuration
+│   ├── package.json           # Node dependencies
+│   ├── package-lock.json
+│   └── .gitignore
+│
+├── Dataset/                   # Plant disease dataset
+└── README.md
 ```
 
 ## 📝 License
