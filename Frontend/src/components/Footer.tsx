@@ -4,79 +4,74 @@ import { Link } from 'react-router-dom';
 export const Footer = () => {
 
     return (
-        <footer className="bg-slate-50 border-t border-slate-200 pt-20 pb-10">
-            <div className="container mx-auto px-4 md:px-6">
+        <footer className="bg-white border-t border-slate-100 pt-16 pb-8">
+            <div className="max-w-5xl mx-auto px-4 md:px-6">
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                     <div className="col-span-1 sm:col-span-2 lg:col-span-1 space-y-6">
                         <div className="flex items-center gap-2">
-                            <div className="bg-primary p-2 rounded-lg">
-                                <Leaf className="text-white w-5 h-5" />
+                            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
+                                <Leaf className="text-white w-4 h-4" />
                             </div>
-                            <span className="text-xl font-bold text-slate-900	">
+                            <span className="text-lg font-bold text-slate-900 tracking-tight">
                                 LeafGuard
                             </span>
                         </div>
-                        <p className="text-slate-500 text-sm leading-relaxed">
-                            Leading the revolution in sustainable agriculture through AI-driven plant health diagnostics.
+                        <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+                            Leading the revolution in sustainable agriculture through AI-driven diagnostics and precision plant health monitoring.
                         </p>
-                        <div className="flex items-center gap-4">
-                            <a href="#" className="p-2 bg-white rounded-lg border border-slate-100 text-slate-400 hover:text-primary transition-colors shadow-sm">
-                                <Twitter className="w-4 h-4" />
-                            </a>
-                            <a href="#" className="p-2 bg-white rounded-lg border border-slate-100 text-slate-400 hover:text-primary transition-colors shadow-sm">
-                                <Linkedin className="w-4 h-4" />
-                            </a>
-                            <a href="https://github.com" className="p-2 bg-white rounded-lg border border-slate-100 text-slate-400 hover:text-primary transition-colors shadow-sm">
-                                <Github className="w-4 h-4" />
-                            </a>
+                        <div className="flex items-center gap-3">
+                            {[Twitter, Linkedin, Github].map((Icon, i) => (
+                                <a key={i} href="#" className="w-8 h-8 flex items-center justify-center border border-slate-200 rounded text-slate-400 hover:text-primary hover:border-primary transition-all">
+                                    <Icon className="w-4 h-4" />
+                                </a>
+                            ))}
                         </div>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-900 mb-6">Product</h4>
+                        <h4 className="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider">Product</h4>
                         <ul className="space-y-4 text-sm text-slate-500">
-                            <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
-                            <li><Link to="/analyze" className="hover:text-primary transition-colors">Disease Analysis</Link></li>
-                            <li><Link to="/how-it-works" className="hover:text-primary transition-colors">How it Works</Link></li>
-                            <li><Link to="/technology" className="hover:text-primary transition-colors">CNN Model</Link></li>
-                        </ul>
-                    </div>
-
-
-                    <div>
-                        <h4 className="font-bold text-slate-900 mb-6">Resources</h4>
-                        <ul className="space-y-4 text-sm text-slate-500">
-                            <li><a href="#" className="hover:text-primary transition-colors">API Documentation</a></li>
-                            <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                            <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
-                            <li><a href="#" className="hover:text-primary transition-colors">Agricultural Blog</a></li>
+                            <li><Link to="/" className="hover:text-slate-900 transition-colors">Home</Link></li>
+                            <li><Link to="/analyze" className="hover:text-slate-900 transition-colors">Analysis Tool</Link></li>
+                            <li><Link to="/how-it-works" className="hover:text-slate-900 transition-colors">Methodology</Link></li>
+                            <li><Link to="/technology" className="hover:text-slate-900 transition-colors">Architecture</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-900 mb-6">Newsletter</h4>
-                        <p className="text-sm text-slate-500 mb-4 leading-relaxed">
-                            Get the latest updates on plant disease research and AI breakthroughs.
+                        <h4 className="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider">Legal</h4>
+                        <ul className="space-y-4 text-sm text-slate-500">
+                            <li><a href="#" className="hover:text-slate-900 transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" className="hover:text-slate-900 transition-colors">Terms of Service</a></li>
+                            <li><a href="#" className="hover:text-slate-900 transition-colors">Data Processing</a></li>
+                            <li><a href="#" className="hover:text-slate-900 transition-colors">Compliance</a></li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Research Updates</h4>
+                        <p className="text-sm text-slate-500 leading-relaxed">
+                            Stay informed on plant pathology and neural architecture developments.
                         </p>
                         <div className="flex gap-2">
                             <input
                                 type="email"
-                                placeholder="Email address"
-                                className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                placeholder="Email"
+                                className="flex-1 bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-primary transition-colors"
                             />
-                            <button className="bg-primary text-white p-2 rounded-xl hover:bg-primary-dark transition-colors">
-                                <Mail className="w-5 h-5" />
+                            <button className="bg-slate-900 text-white px-3 rounded hover:bg-slate-800 transition-colors">
+                                <Mail className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium">
-                    <p>© 2026 LeafGuard AI. All rights reserved.</p>
+                <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                    <p>© 2026 LeafGuard AI Systems. Developed by Krina.</p>
                     <div className="flex items-center gap-6">
-                        <a href="#" className="hover:text-primary transition-colors">Cookies</a>
-                        <a href="#" className="hover:text-primary transition-colors">Security</a>
-                        <a href="#" className="hover:text-primary transition-colors">Compliance</a>
+                        <a href="#" className="hover:text-slate-900 transition-colors">Service Status</a>
+                        <a href="#" className="hover:text-slate-900 transition-colors">Security</a>
+                        <a href="#" className="hover:text-slate-900 transition-colors">Infrastructure</a>
                     </div>
                 </div>
             </div>

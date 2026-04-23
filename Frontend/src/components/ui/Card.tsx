@@ -11,7 +11,7 @@ export const Card = ({ children, className, animate = true }: CardProps) => {
     return (
         <div
             className={cn(
-                'bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden',
+                'bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden',
                 animate && 'animate-fade-in',
                 className
             )}
@@ -22,11 +22,11 @@ export const Card = ({ children, className, animate = true }: CardProps) => {
 };
 
 export const CardHeader = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div className={cn('p-6', className)}>{children}</div>
+    <div className={cn('p-6 border-b border-slate-100', className)}>{children}</div>
 );
 
 export const CardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div className={cn('p-6 pt-0', className)}>{children}</div>
+    <div className={cn('p-6', className)}>{children}</div>
 );
 
 export const CardFooter = ({ children, className }: { children: React.ReactNode; className?: string }) => (

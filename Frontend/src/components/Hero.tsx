@@ -1,127 +1,121 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "./ui/Button";
 import { Link } from "react-router-dom";
 
 const slides = [
-    {
-        image: "https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&q=80&w=1600",
-        subtitle: "AI Crop Monitoring",
-        title: "Detect Crop Diseases Instantly",
-        desc: "Identify plant diseases early with AI-powered scanning and protect your harvest."
-    },
-    {
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80&w=1600",
-        subtitle: "Smart Farming",
-        title: "Increase Yield with Precision",
-        desc: "Leverage real-time insights to improve crop health and maximize productivity."
-    },
-    {
-        image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&q=80&w=1600",
-        subtitle: "Field Intelligence",
-        title: "Empower Modern Agriculture",
-        desc: "Make data-driven decisions with intelligent crop analysis and monitoring."
-    }
+  {
+    image: "https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&q=80&w=1800",
+    subtitle: "AI-Powered Diagnostics",
+    title: "Precision Agriculture for Modern Farmers",
+    desc: "Detect plant diseases in seconds using high-fidelity neural networks. Protect your harvest with science-backed insights."
+  },
+  {
+    image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80&w=1800",
+    subtitle: "Instant Analysis",
+    title: "Protect Your Crops with Confidence",
+    desc: "Our model identifies over 38 distinct plant diseases with clinical precision. Simple, fast, and accessible from anywhere."
+  }
 ];
 
 export const Hero = () => {
-    const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setIndex((prev) => (prev + 1) % slides.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, []);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
-    return (
-        <section className="relative h-screen w-full overflow-hidden">
+  return (
+    <section className="relative w-full h-[85vh] min-h-[600px] overflow-hidden bg-white border-b border-slate-100">
+      
+      {/* Visual Side (Structured Grid) */}
+      <div className="absolute inset-0 z-0">
+        <div className="w-full h-full relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={index}
+              src={slides[index].image}
+              className="w-full h-full object-cover"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            />
+          </AnimatePresence>
+          {/* Professional Overlay (Gradient for Readability) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
+        </div>
+      </div>
 
-            {/* Slides */}
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={index}
-                    className="absolute inset-0"
-                >
-                    {/* Background Image */}
-                    <motion.img
-                        src={slides[index].image}
-                        className="w-full h-full object-cover"
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1.05 }}
-                        transition={{ duration: 1 }}
-                    />
-
-                    {/* Dark Overlay */}
-                    <div className="absolute inset-0 bg-black/50" />
-                </motion.div>
-            </AnimatePresence>
-
-            {/* Progress Bar */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-white/20 z-20">
-                <motion.div
-                    key={index}
-                    initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 5, ease: "linear" }}
-                    className="h-full bg-primary"
-                />
+      {/* Content Side */}
+      <div className="relative z-20 h-full max-w-5xl mx-auto px-4 md:px-6 flex items-center">
+        <div className="max-w-2xl">
+          <motion.div
+            key={index + "-content"}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="flex items-center gap-3 text-primary font-bold tracking-widest text-xs uppercase">
+              <span className="w-6 h-[2px] bg-primary" />
+              {slides[index].subtitle}
             </div>
 
-            {/* Content */}
-            <div className="relative z-10 h-full flex items-center">
-                <div className="container mx-auto px-6 lg:px-12">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tight">
+              {slides[index].title}
+            </h1>
 
-                    <motion.div
-                        key={index + "-text"}
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="max-w-2xl text-white"
-                    >
-                        <p className="uppercase tracking-widest text-sm text-primary mb-4">
-                            {slides[index].subtitle}
-                        </p>
+            <p className="text-lg text-slate-600 leading-relaxed max-w-lg">
+              {slides[index].desc}
+            </p>
 
-                        <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-                            {slides[index].title}
-                        </h1>
+            <div className="flex items-center gap-6 pt-4">
+              <Link to="/analyze">
+                <Button size="xl" className="px-10 rounded-md">
+                  Analyze Leaf <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+              <Link to="/how-it-works" className="text-slate-600 hover:text-primary font-semibold flex items-center gap-2 transition-colors">
+                How it works
+              </Link>
+            </div>
 
-                        <p className="text-lg md:text-xl text-white/80 mb-8">
-                            {slides[index].desc}
-                        </p>
-
-                        <div className="flex gap-6 flex-wrap mt-4">
-                            <Link to="/analyze">
-                                <Button size="lg" className="rounded-2xl">
-                                    Start Analysis <ArrowRight className="w-5 h-5 ml-2" />
-                                </Button>
-                            </Link>
-
-                            <Link to="/how-it-works">
-                                <Button variant="outline" size="lg" className="rounded-2xl">
-                                    Learn More
-                                </Button>
-                            </Link>
-                        </div>
-                    </motion.div>
-
+            <div className="pt-12 flex flex-wrap items-center gap-x-12 gap-y-6">
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+                <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
+                98.2% Detection Accuracy
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+                <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+                38+ Plant Species
+              </div>
             </div>
+          </motion.div>
+        </div>
+      </div>
 
-            {/* Indicators */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-                {slides.map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => setIndex(i)}
-                        className={`h-2 rounded-full transition-all ${i === index ? "w-10 bg-primary" : "w-3 bg-white/50"
-                            }`}
-                    />
-                ))}
-            </div>
-        </section>
-    );
+      {/* Slide Indicators (Minimal) */}
+      <div className="absolute bottom-10 right-10 flex flex-col gap-3 z-30">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className={`w-1 transition-all duration-500 rounded-full ${
+              i === index ? "h-12 bg-primary" : "h-4 bg-slate-300 hover:bg-slate-400"
+            }`}
+          />
+        ))}
+      </div>
+
+    </section>
+  );
 };
