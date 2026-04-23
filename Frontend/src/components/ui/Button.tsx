@@ -10,28 +10,26 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
         const variants = {
-            primary: 'bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95',
-            secondary: 'bg-primary-light text-white hover:bg-primary shadow-lg shadow-primary-light/20 active:scale-95',
-            outline: 'border-2 border-primary/30 text-primary-dark hover:bg-primary/5 hover:border-primary active:scale-95',
-            ghost: 'text-primary-dark hover:bg-primary/10 active:scale-95',
+            primary: 'bg-primary text-white hover:bg-primary-dark shadow-[0_10px_20px_-10px_rgba(21,128,61,0.5)] hover:shadow-[0_20px_30px_-10px_rgba(21,128,61,0.6)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]',
+            secondary: 'bg-primary-light text-white hover:bg-primary shadow-lg shadow-primary-light/20 active:scale-[0.98]',
+            outline: 'border-2 border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-black hover:border-white active:scale-[0.98]',
+            ghost: 'text-primary-dark hover:bg-primary/10 active:scale-[0.98]',
         };
 
         const sizes: Record<string, string> = {
             sm: 'px-4 py-2 text-sm',
             md: 'px-6 py-3 text-base',
-            lg: 'px-8 py-4 text-lg font-semibold',
+            lg: 'px-8 py-4 text-lg font-bold',
             xl: 'px-10 py-5 text-xl font-bold',
             '2xl': 'px-12 py-6 text-2xl font-bold',
         };
-
-
 
         return (
             <button
                 ref={ref}
                 disabled={disabled || isLoading}
                 className={cn(
-                    'inline-flex items-center justify-center rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed font-display',
+                    'inline-flex items-center justify-center gap-2 rounded-2xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed font-display',
                     variants[variant],
                     sizes[size],
                     className
@@ -49,4 +47,5 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         );
     }
 );
+
 

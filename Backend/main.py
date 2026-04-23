@@ -1,22 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import uvicorn
 import numpy as np
 from PIL import Image
 import tensorflow as tf
 import os
 import io
-
-app = FastAPI(title="Plant Disease Detection API")
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], # In production, replace with specific origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Load model and class names
 MODEL_PATH = "plant_disease_model.h5"
@@ -57,7 +47,7 @@ DISEASE_INFO = {
         "isHealthy": False
     },
     "Corn_(maize)___Northern_Leaf_Blight": {
-        "description": "北方叶斑病 (Northern Leaf Blight) is a fungal disease caused by Exserohilum turcicum.",
+        "description": "Northern Leaf Blight is a fungal disease caused by Exserohilum turcicum.",
         "treatments": ["Resistant hybrids.", "Tillage to bury residue.", "Timely fungicide application."],
         "isHealthy": False
     },
@@ -161,9 +151,24 @@ def load_data():
     else:
         print(f"'{CLASS_NAMES_PATH}' not found. Please train the model first.")
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Load model and data
     load_data()
+    yield
+    # Shutdown: Clean up if needed
+    pass
+
+app = FastAPI(title="Plant Disease Detection API", lifespan=lifespan)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def read_file_as_image(data) -> np.ndarray:
     image = Image.open(io.BytesIO(data)).convert('RGB')
@@ -175,12 +180,9 @@ async def predict(file: UploadFile = File(...)):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded. Please train it first.")
     
-    # Read image
     try:
         image = read_file_as_image(await file.read())
-        # Rescale the image like in the training process
         image = image / 255.0
-        # Add batch dimension
         image_batch = np.expand_dims(image, 0)
         
         predictions = model.predict(image_batch)
@@ -211,4 +213,4 @@ async def ping():
     return "Hello, I am alive"
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

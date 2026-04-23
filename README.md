@@ -65,7 +65,7 @@ npm install
 cd Backend
 python main.py
 ```
-The backend will be running at `http://localhost:8000`.
+The backend will be running at `http://127.0.0.1:8000`.
 
 ### Start the Web Studio
 ```bash
