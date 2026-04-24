@@ -1,81 +1,115 @@
-import { Cpu, Network, Search, Zap, ShieldCheck } from 'lucide-react';
-import { Card, CardContent } from './ui/Card';
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
+import { Leaf, Cpu, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/Button";
+import { ArrowRight } from "lucide-react";
+
+const stats = [
+    { value: "97.4%", label: "Detection Accuracy" },
+    { value: "38+", label: "Disease Classes" },
+    { value: "85K+", label: "Training Samples" },
+    { value: "<2s", label: "Inference Time" },
+];
+
+const features = [
+    {
+        icon: <Leaf className="w-5 h-5" />,
+        title: "Plant Pathology AI",
+        desc: "Trained on real-world samples from labs across 15 climatic zones.",
+    },
+    {
+        icon: <Cpu className="w-5 h-5" />,
+        title: "ResNet-50 Backbone",
+        desc: "Custom attention layers pinpoint lesions with sub-pixel precision.",
+    },
+    {
+        icon: <Globe className="w-5 h-5" />,
+        title: "Edge-Optimized",
+        desc: "Quantized weights deliver fast inference even on slow connections.",
+    },
+];
 
 export const AboutSection = () => {
-    const features = [
-        {
-            icon: <Search className="w-5 h-5 text-primary" />,
-            title: "Pathology Detection",
-            desc: "Automated identification of plant diseases through high-resolution image analysis."
-        },
-        {
-            icon: <Network className="w-5 h-5 text-primary" />,
-            title: "Neural Architectures",
-            desc: "Bespoke CNN models trained on 85,000+ certified agricultural pathology samples."
-        },
-        {
-            icon: <ShieldCheck className="w-5 h-5 text-primary" />,
-            title: "Data Reliability",
-            desc: "Rigorous verification protocols ensure diagnostic accuracy across various lighting and environments."
-        },
-        {
-            icon: <Zap className="w-5 h-5 text-primary" />,
-            title: "Real-time Response",
-            desc: "Optimized inference engines deliver results in under 1.2 seconds for on-field utility."
-        }
-    ];
-
     return (
-        <section id="about" className="py-16 md:py-24 px-4 bg-white border-b border-slate-100">
-            <div className="max-w-5xl mx-auto">
-                <div className="grid lg:grid-cols-2 gap-24 items-center">
-                    
-                    <div className="space-y-10">
+        <section className="section-padding bg-white border-t border-slate-100">
+            <div className="container mx-auto px-4 md:px-8">
+
+                {/* Two-column layout */}
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+                    {/* Left — image */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="relative rounded-2xl overflow-hidden border border-slate-100 aspect-[4/3]"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=1200"
+                            alt="Agricultural technology"
+                            className="w-full h-full object-cover"
+                        />
+                        {/* Subtle overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent" />
+
+                        {/* Stats row */}
+                        <div className="absolute bottom-0 left-0 right-0 p-5 bg-white/90 backdrop-blur-sm border-t border-white/50">
+                            <div className="grid grid-cols-4 divide-x divide-slate-200">
+                                {stats.map((s, i) => (
+                                    <div key={i} className="text-center px-3">
+                                        <div className="text-lg font-bold text-slate-900 font-display leading-tight">{s.value}</div>
+                                        <div className="text-[10px] text-slate-400 mt-0.5">{s.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Right — content */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="space-y-8"
+                    >
                         <div className="space-y-4">
-                            <h2 className="text-sm font-bold text-primary uppercase tracking-[0.2em]">The Technology</h2>
-                            <h3 className="text-4xl md:text-5xl font-bold leading-tight text-slate-900">
-                                Bridging the gap between pathology and productivity.
-                            </h3>
-                            <p className="text-lg text-slate-600 max-w-xl">
-                                LeafGuard leverages deep learning to provide farmers with clinical-grade diagnostic tools directly in their hands.
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
+                                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                                <span className="text-slate-500 font-medium text-xs uppercase tracking-widest">About LeafGuard</span>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight font-display">
+                                Science-backed<br />
+                                <span className="text-gradient">Plant Intelligence</span>
+                            </h2>
+                            <p className="text-slate-500 leading-relaxed text-sm">
+                                LeafGuard combines convolutional neural networks with real-world agronomic expertise to deliver 
+                                actionable disease diagnostics — helping farmers detect problems early and protect their harvest.
                             </p>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 gap-8">
-                            {features.map((feature, i) => (
-                                <div key={i} className="space-y-3">
-                                    <div className="w-10 h-10 rounded-md bg-slate-50 border border-slate-200 flex items-center justify-center">
-                                        {feature.icon}
+                        {/* Feature list */}
+                        <div className="space-y-4">
+                            {features.map((f, i) => (
+                                <div key={i} className="flex gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:border-primary/20 hover:bg-primary/4 transition-colors duration-200">
+                                    <div className="w-9 h-9 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
+                                        {f.icon}
                                     </div>
-                                    <h4 className="font-bold text-slate-900">{feature.title}</h4>
-                                    <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
+                                    <div>
+                                        <div className="text-sm font-semibold text-slate-900 mb-0.5">{f.title}</div>
+                                        <div className="text-xs text-slate-500 leading-relaxed">{f.desc}</div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
 
-                    <div className="relative">
-                        <div className="aspect-square rounded-xl overflow-hidden border border-slate-200 shadow-sm relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=1200"
-                                alt="Agricultural Technology"
-                                className="w-full h-full object-cover"
-                            />
-                            {/* Overlay for depth */}
-                            <div className="absolute inset-0 bg-slate-900/5" />
-                        </div>
-                        
-                        {/* Status Label (Minimal) */}
-                        <div className="absolute -bottom-6 -left-6 bg-white border border-slate-200 p-6 rounded-lg shadow-sm max-w-[200px]">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Status</span>
-                            </div>
-                            <div className="text-sm font-bold text-slate-900">Optimized for Field Deployment</div>
-                        </div>
-                    </div>
-
+                        <Link to="/analyze">
+                            <Button size="md" className="gap-2">
+                                Try It Now <ArrowRight className="w-4 h-4" />
+                            </Button>
+                        </Link>
+                    </motion.div>
                 </div>
             </div>
         </section>

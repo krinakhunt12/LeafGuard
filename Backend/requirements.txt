@@ -7,3 +7,14 @@ fastapi
 uvicorn
 python-multipart
 pillow
+sqlalchemy 
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic[email]
+email-validator
+huggingface_hub
+dotenv
+openai
+faiss-cpu
+sentence-transformers

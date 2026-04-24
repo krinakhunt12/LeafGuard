@@ -104,10 +104,10 @@ LeafGuard/
 │   │   │   └── utils.ts       # Utility helper functions
 │   │   │
 │   │   ├── pages/             # Application pages
-│   │   │   ├── AnalyzePage.tsx
+│   │   │   ├── Analyze.tsx
 │   │   │   ├── HomePage.tsx
-│   │   │   ├── HowItWorksPage.tsx
-│   │   │   └── TechnologyPage.tsx
+│   │   │   ├── HowItWorks.tsx
+│   │   │   └── Technology.tsx
 │   │   │
 │   │   ├── App.tsx            # Root React component
 │   │   ├── App.css            # Global styles

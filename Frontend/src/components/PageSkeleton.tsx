@@ -1,45 +1,22 @@
 import { Skeleton } from "./ui/Skeleton";
 
 export const HeroSkeleton = () => (
-    <div className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden bg-white">
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="space-y-8">
-                    <Skeleton className="h-10 w-48 rounded-full" />
-                    <div className="space-y-4">
-                        <Skeleton className="h-16 w-full lg:w-[120%]" />
-                        <Skeleton className="h-16 w-[80%]" />
-                    </div>
-                    <Skeleton className="h-20 w-[60%]" />
-                    <div className="flex gap-5">
-                        <Skeleton className="h-16 w-48" />
-                        <Skeleton className="h-16 w-40" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-8 pt-10 border-t border-slate-100">
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                    </div>
-                </div>
-                <div className="hidden lg:block relative">
-                    <Skeleton className="aspect-video w-full rounded-[3rem]" />
-                </div>
-            </div>
-        </div>
-    </div>
+    <div className="relative h-screen w-full bg-slate-100 animate-pulse" />
 );
 
 export const UploadSkeleton = () => (
-    <div className="section-padding bg-slate-50">
-        <div className="container mx-auto max-w-4xl px-4 md:px-0">
-            <div className="text-center mb-12 space-y-4">
-                <Skeleton className="h-12 w-64 mx-auto" />
-                <Skeleton className="h-4 w-96 mx-auto" />
+    <div className="section-padding bg-[#f8faf8]">
+        <div className="container mx-auto max-w-3xl px-4">
+            <div className="text-center mb-10 space-y-3">
+                <Skeleton className="h-8 w-48 mx-auto" />
+                <Skeleton className="h-4 w-72 mx-auto" />
             </div>
-            <div className="rounded-[2.5rem] bg-white shadow-xl p-0 overflow-hidden">
-                <Skeleton className="h-40 w-full" />
-                <div className="p-12">
-                    <Skeleton className="h-64 w-full rounded-3xl" />
+            <div className="rounded-2xl border border-slate-100 bg-white overflow-hidden">
+                <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+                    <Skeleton className="h-5 w-40" />
+                </div>
+                <div className="p-6">
+                    <Skeleton className="h-56 w-full rounded-xl" />
                 </div>
             </div>
         </div>
@@ -49,15 +26,15 @@ export const UploadSkeleton = () => (
 export const SectionSkeleton = () => (
     <div className="section-padding bg-white">
         <div className="container mx-auto px-4 md:px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <Skeleton className="aspect-square w-full rounded-3xl" />
-                <div className="space-y-8">
-                    <Skeleton className="h-12 w-64" />
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <Skeleton className="aspect-video w-full rounded-2xl" />
+                <div className="space-y-6">
+                    <Skeleton className="h-10 w-56" />
                     <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-[80%]" />
-                    <div className="grid sm:grid-cols-2 gap-6">
-                        <Skeleton className="h-32 w-full rouned-2xl" />
-                        <Skeleton className="h-32 w-full rouned-2xl" />
+                    <Skeleton className="h-4 w-4/5" />
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        <Skeleton className="h-28 w-full rounded-xl" />
+                        <Skeleton className="h-28 w-full rounded-xl" />
                     </div>
                 </div>
             </div>
@@ -66,34 +43,31 @@ export const SectionSkeleton = () => (
 );
 
 export const ResultSkeleton = () => (
-    <div className="section-padding bg-[#fcfdfa] pt-10">
-        <div className="container mx-auto max-w-6xl px-4 md:px-0">
-            <div className="grid lg:grid-cols-12 gap-10">
-                <div className="lg:col-span-8 space-y-8">
-                    <Skeleton className="h-[600px] w-full rounded-[2.5rem]" />
+    <div className="section-padding bg-[#f8faf8] pt-0">
+        <div className="container mx-auto max-w-5xl px-4">
+            <div className="grid lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-8">
+                    <Skeleton className="h-[500px] w-full rounded-2xl" />
                 </div>
-                <div className="lg:col-span-4 space-y-8">
-                    <Skeleton className="h-64 w-full rounded-[2.5rem]" />
-                    <Skeleton className="h-64 w-full rounded-[2.5rem]" />
+                <div className="lg:col-span-4 space-y-5">
+                    <Skeleton className="h-48 w-full rounded-2xl" />
+                    <Skeleton className="h-48 w-full rounded-2xl" />
                 </div>
             </div>
         </div>
     </div>
 );
+
 export const HowItWorksSkeleton = () => (
     <div className="section-padding bg-white">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <Skeleton className="h-16 w-96 mx-auto mb-20" />
-            <div className="grid lg:grid-cols-4 gap-8">
+            <Skeleton className="h-10 w-72 mx-auto mb-16" />
+            <div className="grid lg:grid-cols-4 gap-6">
                 {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="flex flex-col items-center gap-6">
-                        <Skeleton className="h-20 w-20 rounded-3xl" />
-                        <Skeleton className="h-8 w-40" />
-                        <Skeleton className="h-20 w-full" />
-                    </div>
+                    <Skeleton key={i} className="h-44 w-full rounded-2xl" />
                 ))}
             </div>
-            <Skeleton className="h-[400px] w-full rounded-[3rem] mt-32" />
+            <Skeleton className="h-72 w-full rounded-2xl mt-12" />
         </div>
     </div>
 );

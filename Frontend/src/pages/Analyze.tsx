@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense } from 'react';
 import { UploadSkeleton, ResultSkeleton } from '../components/PageSkeleton';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 const UploadSection = lazy(() => import('../components/UploadSection').then(module => ({ default: module.UploadSection })));
 const ResultSection = lazy(() => import('../components/ResultSection').then(module => ({ default: module.ResultSection })));
@@ -13,13 +14,16 @@ interface ResultData {
     isHealthy: boolean;
 }
 
-export default function AnalyzePage() {
+export default function Analyze() {
+    const { token } = useAuth();
     const [isPredicting, setIsPredicting] = useState(false);
     const [result, setResult] = useState<ResultData | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    const handleAnalyze = async (file: File) => {
+    const handleAnalyze = async (file: File, imgPreviewUrl: string) => {
         setIsPredicting(true);
         setResult(null);
+        setPreviewUrl(imgPreviewUrl);
 
         // Simulated network delay
         await new Promise(resolve => setTimeout(resolve, 2500));
@@ -29,6 +33,9 @@ export default function AnalyzePage() {
             formData.append('file', file);
             const response = await fetch('http://127.0.0.1:8000/predict', {
                 method: 'POST',
+                headers: {
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 body: formData,
             });
 
@@ -78,7 +85,7 @@ export default function AnalyzePage() {
             <div id="result-anchor" className="scroll-mt-24 min-h-[400px]">
                 <Suspense fallback={<ResultSkeleton />}>
                     {isPredicting && <ResultSkeleton />}
-                    <ResultSection result={result} />
+                    <ResultSection result={result} previewUrl={previewUrl} />
                 </Suspense>
             </div>
         </div>

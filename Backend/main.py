@@ -7,10 +7,37 @@ from PIL import Image
 import tensorflow as tf
 import os
 import io
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+from sqlalchemy.orm import Session
+from fastapi import Depends
+import models
+import schemas
+import auth
+from database import engine, get_db
+from fastapi.security import OAuth2PasswordBearer
+from openai import OpenAI
+from chatbot_engine import AgroChatbot
+
+# Create database tables
+try:
+    print("Connecting to database...")
+    models.Base.metadata.create_all(bind=engine)
+    print("Database tables created successfully!")
+except Exception as e:
+    print(f"Error creating database tables: {e}")
 
 # Load model and class names
 MODEL_PATH = "plant_disease_model.h5"
 CLASS_NAMES_PATH = "class_names.txt"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+# Initialize Chatbot Engine
+chatbot = AgroChatbot()
 
 model = None
 class_names = []
@@ -164,7 +191,11 @@ app = FastAPI(title="Plant Disease Detection API", lifespan=lifespan)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:3000", # Common React port
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -176,7 +207,11 @@ def read_file_as_image(data) -> np.ndarray:
     return np.array(image)
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(
+    file: UploadFile = File(...), 
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded. Please train it first.")
     
@@ -190,18 +225,39 @@ async def predict(file: UploadFile = File(...)):
         predicted_class = class_names[predicted_class_index]
         confidence = float(np.max(predictions[0]))
         
+        # Get current user if token is valid (optional for predict)
+        current_user_email = auth.get_current_user(db, token)
+        db_user = None
+        if current_user_email:
+            db_user = db.query(models.User).filter(models.User.email == current_user_email).first()
+
         info = DISEASE_INFO.get(predicted_class, {
             "description": f"No detailed information available for {predicted_class}.",
             "treatments": ["No treatment info found."],
             "isHealthy": "healthy" in predicted_class.lower()
         })
         
+        # Save to database
+        db_diagnosis = models.Diagnosis(
+            disease_name=predicted_class.replace("___", " ").replace("_", " "),
+            confidence=round(confidence * 100, 2),
+            description=info["description"],
+            treatments=info["treatments"],
+            is_healthy=info["isHealthy"],
+            user_id=db_user.id if db_user else None
+        )
+        db.add(db_diagnosis)
+        db.commit()
+        db.refresh(db_diagnosis)
+        
         return {
-            "diseaseName": predicted_class.replace("___", " ").replace("_", " "),
-            "confidence": round(confidence * 100, 2),
-            "description": info["description"],
-            "treatments": info["treatments"],
-            "isHealthy": info["isHealthy"]
+            "id": db_diagnosis.id,
+            "diseaseName": db_diagnosis.disease_name,
+            "confidence": db_diagnosis.confidence,
+            "description": db_diagnosis.description,
+            "treatments": db_diagnosis.treatments,
+            "isHealthy": db_diagnosis.is_healthy,
+            "timestamp": db_diagnosis.created_at
         }
     except Exception as e:
         import traceback
@@ -211,6 +267,69 @@ async def predict(file: UploadFile = File(...)):
 @app.get("/ping")
 async def ping():
     return "Hello, I am alive"
+
+# Authentication Routes
+@app.post("/signup", response_model=schemas.User)
+def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    hashed_password = auth.get_password_hash(user.password)
+    new_user = models.User(
+        email=user.email,
+        full_name=user.full_name,
+        hashed_password=hashed_password
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+@app.post("/login", response_model=schemas.Token)
+def login(user_credentials: schemas.UserCreate, db: Session = Depends(get_db)):
+    # Note: schemas.UserCreate is used here for simplicity (email/password)
+    db_user = db.query(models.User).filter(models.User.email == user_credentials.email).first()
+    if not db_user or not auth.verify_password(user_credentials.password, db_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    access_token = auth.create_access_token(data={"sub": db_user.email})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model=schemas.User)
+def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    email = auth.get_current_user(db, token)
+    if email is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = db.query(models.User).filter(models.User.email == email).first()
+    return user
+
+@app.get("/diagnoses")
+def get_diagnoses(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    email = auth.get_current_user(db, token)
+    if email is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    user = db.query(models.User).filter(models.User.email == email).first()
+    return db.query(models.Diagnosis).filter(models.Diagnosis.user_id == user.id).order_by(models.Diagnosis.created_at.desc()).all()
+
+@app.post("/chat")
+async def chat(request: dict):
+    message = request.get("message")
+    if not message:
+        raise HTTPException(status_code=400, detail="Message is required")
+    
+    try:
+        response_data = chatbot.get_response(message)
+        return {"response": response_data["response"]}
+    except Exception as e:
+        print(f"Chatbot error: {e}")
+        return {"response": f"Chatbot Error: {str(e)}"}
+
+def read_file_as_image(data) -> np.ndarray:
+    image = Image.open(io.BytesIO(data)).convert('RGB')
+    image = image.resize((128, 128))
+    return np.array(image)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

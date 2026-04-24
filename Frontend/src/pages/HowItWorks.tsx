@@ -1,13 +1,13 @@
 import { lazy, Suspense } from 'react';
 import { HowItWorksSkeleton } from '../components/PageSkeleton';
 
-const HowItWorks = lazy(() => import('../components/HowItWorks').then(module => ({ default: module.HowItWorks })));
+const HowItWorksContent = lazy(() => import('../components/HowItWorks').then(module => ({ default: module.HowItWorks })));
 
-export default function HowItWorksPage() {
+export default function HowItWorks() {
     return (
         <div className="pt-24 animate-fade-in bg-white min-h-screen">
             <Suspense fallback={<HowItWorksSkeleton />}>
-                <HowItWorks />
+                <HowItWorksContent />
             </Suspense>
         </div>
     );

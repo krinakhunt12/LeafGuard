@@ -1,0 +1,131 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["hi", "hello", "hey", "नमस्ते", "કેમ છો", "good morning", "good evening"],
+      "responses": [
+        "Hello! I am LeafGuard AI. How can I help you with your crops today?",
+        "Greetings farmer! 🌱 How can I assist you today?",
+        "Hi there! Tell me about your crop problem."
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["bye", "goodbye", "see you", "फिर मिलेंगे", "આવજો"],
+      "responses": [
+        "Goodbye! Happy farming 🌾",
+        "Take care! Let me know if you need help again.",
+        "See you soon, किसान मित्र!"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["thanks", "thank you", "धन्यवाद", "આભાર"],
+      "responses": [
+        "You're welcome!",
+        "Happy to help 😊",
+        "Anytime! Keep growing 🌱"
+      ]
+    },
+    {
+      "tag": "wheat_farming",
+      "patterns": ["wheat", "wheat farming", "घઉંની ખેતી", "गेहूं की खेती", "how to grow wheat"],
+      "responses": [
+        "Wheat is best sown in November.",
+        "Use NPK fertilizer for wheat.",
+        "Irrigate at CRI stage for best yield.",
+        "Choose high-yield varieties like HD-2967."
+      ]
+    },
+    {
+      "tag": "rice_farming",
+      "patterns": ["rice", "paddy", "धान", "ચોખા", "rice farming"],
+      "responses": [
+        "Rice requires standing water for proper growth.",
+        "Use proper transplanting methods for better yield.",
+        "Maintain water level during early growth stages."
+      ]
+    },
+    {
+      "tag": "cotton_farming",
+      "patterns": ["cotton", "કપાસ", "कपास खेती", "cotton crop"],
+      "responses": [
+        "Cotton grows well in black soil.",
+        "Use drip irrigation for better results.",
+        "Control pests like bollworm regularly."
+      ]
+    },
+    {
+      "tag": "pest_control",
+      "patterns": ["pests", "insects", "જીવાત", "कीट", "bugs in crops"],
+      "responses": [
+        "Use neem oil for natural pest control.",
+        "Monitor crops daily for early signs of pests.",
+        "Use integrated pest management (IPM)."
+      ]
+    },
+    {
+      "tag": "fertilizer",
+      "patterns": ["fertilizer", "खाद", "ખાતર", "which fertilizer to use"],
+      "responses": [
+        "Use NPK fertilizers based on soil test.",
+        "Organic compost improves soil health.",
+        "Avoid overuse of chemical fertilizers."
+      ]
+    },
+    {
+      "tag": "irrigation",
+      "patterns": ["water", "irrigation", "पानी", "પાણી આપવું", "watering crops"],
+      "responses": [
+        "Drip irrigation saves water efficiently.",
+        "Avoid overwatering as it can damage roots.",
+        "Water crops early morning or evening."
+      ]
+    },
+    {
+      "tag": "disease_detection",
+      "patterns": ["disease", "plant disease", "leaf spots", "રોગ", "बीमारी"],
+      "responses": [
+        "Upload an image to detect plant disease.",
+        "Leaf spots may indicate fungal infection.",
+        "Remove infected leaves to prevent spread."
+      ]
+    },
+    {
+      "tag": "weather",
+      "patterns": ["weather", "rain", "मौसम", "હવામાન"],
+      "responses": [
+        "Check local weather forecast before irrigation.",
+        "Avoid spraying during rainy conditions.",
+        "Weather impacts crop yield significantly."
+      ]
+    },
+    {
+      "tag": "soil_health",
+      "patterns": ["soil", "soil health", "मिट्टी", "માટી"],
+      "responses": [
+        "Test soil regularly for nutrients.",
+        "Use organic matter to improve soil structure.",
+        "Crop rotation helps maintain soil health."
+      ]
+    },
+    {
+      "tag": "yield_improvement",
+      "patterns": ["increase yield", "better production", "उपज बढ़ाना", "ઉત્પાદન વધારવું"],
+      "responses": [
+        "Use high-quality seeds.",
+        "Follow proper irrigation and fertilization schedule.",
+        "Monitor pests and diseases regularly."
+      ]
+    },
+    {
+      "tag": "default",
+      "patterns": ["", "unknown"],
+      "responses": [
+        "Sorry, I didn’t understand that. Can you rephrase?",
+        "Please ask about crops, pests, or farming practices.",
+        "I'm here to help with agriculture-related questions 🌱"
+      ]
+    }
+  ]
+}

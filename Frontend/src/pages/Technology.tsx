@@ -3,7 +3,7 @@ import { SectionSkeleton } from '../components/PageSkeleton';
 
 const AboutSection = lazy(() => import('../components/AboutSection').then(module => ({ default: module.AboutSection })));
 
-export default function TechnologyPage() {
+export default function Technology() {
     return (
         <div className="pt-24 animate-fade-in bg-slate-900 min-h-screen">
             <Suspense fallback={<SectionSkeleton />}>

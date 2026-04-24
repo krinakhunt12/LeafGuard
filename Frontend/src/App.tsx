@@ -2,14 +2,25 @@ import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { Chatbot } from './components/Chatbot';
 import { Toaster } from 'react-hot-toast';
 import { HeroSkeleton } from './components/PageSkeleton';
+import { AuthProvider } from './context/AuthContext';
 
 // Lazy load Pages
 const HomePage = lazy(() => import('./pages/HomePage'));
-const AnalyzePage = lazy(() => import('./pages/AnalyzePage'));
-const HowItWorksPage = lazy(() => import('./pages/HowItWorksPage'));
-const TechnologyPage = lazy(() => import('./pages/TechnologyPage'));
+const Analyze = lazy(() => import('./pages/Analyze'));
+const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const Technology = lazy(() => import('./pages/Technology'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+
+// Static Pages
+const ApiDocsPage = lazy(() => import('./pages/static/ApiDocs'));
+const PrivacyPage = lazy(() => import('./pages/static/Privacy'));
+const TermsPage = lazy(() => import('./pages/static/Terms'));
+const BlogPage = lazy(() => import('./pages/static/Blog'));
 
 // Scroll to top helper
 const ScrollToTop = () => {
@@ -22,28 +33,38 @@ const ScrollToTop = () => {
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="min-h-screen bg-slate-50 font-sans selection:bg-primary/20 selection:text-primary overflow-x-hidden">
-        <Toaster position="top-center" reverseOrder={false} />
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-primary/20 selection:text-primary overflow-x-hidden">
+          <Toaster position="top-center" reverseOrder={false} />
 
-        <Navbar />
+          <Navbar />
 
-        <main className="max-w-[2000px] mx-auto">
+          <main className="max-w-[2000px] mx-auto">
 
-          <Suspense fallback={<HeroSkeleton />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/analyze" element={<AnalyzePage />} />
-              <Route path="/how-it-works" element={<HowItWorksPage />} />
-              <Route path="/technology" element={<TechnologyPage />} />
-            </Routes>
-          </Suspense>
-        </main>
+            <Suspense fallback={<HeroSkeleton />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/analyze" element={<Analyze />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/technology" element={<Technology />} />
+                <Route path="/api-docs" element={<ApiDocsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Routes>
+            </Suspense>
+          </main>
 
-        <Footer />
-      </div>
-    </Router>
+          <Footer />
+          <Chatbot />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
