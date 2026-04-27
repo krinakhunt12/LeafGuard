@@ -1,8 +1,7 @@
-import { ShieldCheck, AlertTriangle, Thermometer, Droplets, Info, Download, Network } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, Thermometer, Droplets, Download, Network, Share2, Calendar } from 'lucide-react';
 import { Card, CardContent } from './ui/Card';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
-import { Button } from './ui/Button';
 import { useState } from 'react';
 import { generatePdf } from '../lib/generatePdf';
 import toast from 'react-hot-toast';
@@ -27,203 +26,201 @@ export const ResultSection = ({ result, previewUrl }: ResultSectionProps) => {
 
     const handleDownload = async () => {
         setIsDownloading(true);
-        const toastId = toast.loading('Generating PDF report…');
+        const toastId = toast.loading('Generating Scientific Report…');
         try {
             await generatePdf(result, previewUrl);
-            toast.success('Report downloaded!', { id: toastId });
+            toast.success('Report exported successfully!', { id: toastId });
         } catch (err) {
             console.error(err);
-            toast.error('Failed to generate PDF.', { id: toastId });
+            toast.error('Failed to generate report.', { id: toastId });
         } finally {
             setIsDownloading(false);
         }
     };
 
     return (
-        <section className="section-padding bg-[#f8faf8] pt-0">
-            <div className="container mx-auto max-w-5xl px-4 md:px-0">
-                <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="grid lg:grid-cols-12 gap-6"
-                >
-                    {/* ── Main Result Card ── */}
-                    <Card className="lg:col-span-8 border border-slate-100 overflow-hidden rounded-2xl">
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="grid lg:grid-cols-12 gap-10 max-w-6xl mx-auto"
+        >
+            {/* ── Main Result Card ── */}
+            <Card className="lg:col-span-8 border border-slate-100 shadow-2xl shadow-slate-100/50 overflow-hidden rounded-[3rem] bg-white">
 
-                        {/* Status bar */}
-                        <div className={cn(
-                            "py-3 px-6 text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2",
-                            result.isHealthy ? "bg-primary" : "bg-red-500"
-                        )}>
-                            {result.isHealthy
-                                ? <><ShieldCheck className="w-3.5 h-3.5" /> Healthy Leaf Detected</>
-                                : <><AlertTriangle className="w-3.5 h-3.5" /> Disease Detected</>
-                            }
+                {/* Status bar */}
+                <div className={cn(
+                    "py-4 px-8 text-white text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3",
+                    result.isHealthy ? "bg-primary shadow-[0_4px_20px_rgba(22,163,74,0.3)]" : "bg-red-500 shadow-[0_4px_20px_rgba(239,68,68,0.3)]"
+                )}>
+                    {result.isHealthy
+                        ? <><ShieldCheck className="w-4 h-4" /> Diagnosis: Optimal Health</>
+                        : <><AlertTriangle className="w-4 h-4" /> Diagnosis: Pathological Presence</>
+                    }
+                </div>
+
+                {/* Header */}
+                <div className="p-10 md:p-14 border-b border-slate-50">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <span className="px-3 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
+                                    Official Diagnostic
+                                </span>
+                                <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+                                    <Calendar className="w-3.5 h-3.5" /> {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                            </div>
+                            <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight uppercase tracking-tight">
+                                {result.diseaseName}
+                            </h3>
                         </div>
 
-                        {/* Header */}
-                        <div className="p-7 pb-5 border-b border-slate-100">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                <div className="space-y-2">
-                                    <h3 className="text-3xl font-bold text-slate-900 font-display leading-tight">
-                                        {result.diseaseName}
-                                    </h3>
-                                    <div className="flex items-center gap-2.5">
-                                        <span className="px-2.5 py-1 bg-primary/8 text-primary text-xs font-semibold rounded-md">
-                                            AI Diagnosis
-                                        </span>
-                                        <span className="text-slate-400 text-xs flex items-center gap-1">
-                                            <Info className="w-3.5 h-3.5" /> Verified methodology
-                                        </span>
-                                    </div>
+                        {/* Confidence Ring (Refined) */}
+                        <div className="flex items-center gap-5 px-6 py-5 bg-slate-50 rounded-3xl border border-slate-100">
+                            <div className="relative w-16 h-16">
+                                <svg className="w-16 h-16 -rotate-90">
+                                    <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4"
+                                        fill="transparent" className="text-slate-200" />
+                                    <motion.circle
+                                        initial={{ strokeDashoffset: 175.9 }}
+                                        animate={{ strokeDashoffset: 175.9 * (1 - result.confidence / 100) }}
+                                        transition={{ duration: 2, ease: "easeOut" }}
+                                        cx="32" cy="32" r="28"
+                                        stroke="currentColor" strokeWidth="4"
+                                        fill="transparent"
+                                        strokeDasharray={175.9}
+                                        className="text-primary"
+                                        strokeLinecap="round"
+                                    />
+                                </svg>
+                                <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-slate-900">
+                                    {Math.round(result.confidence)}%
                                 </div>
+                            </div>
+                            <div>
+                                <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-0.5">Reliability</div>
+                                <div className="text-xs font-black text-slate-900 uppercase tracking-tight">High Precision</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                {/* Confidence ring */}
-                                <div className="flex items-center gap-4 px-5 py-4 bg-slate-950 rounded-xl">
-                                    <div className="relative w-16 h-16">
-                                        <svg className="w-16 h-16 -rotate-90">
-                                            <circle cx="32" cy="32" r="26" stroke="currentColor" strokeWidth="5"
-                                                fill="transparent" className="text-slate-800" />
-                                            <motion.circle
-                                                initial={{ strokeDashoffset: 163.4 }}
-                                                animate={{ strokeDashoffset: 163.4 * (1 - result.confidence / 100) }}
-                                                transition={{ duration: 2, ease: "easeOut" }}
-                                                cx="32" cy="32" r="26"
-                                                stroke="currentColor" strokeWidth="5"
-                                                fill="transparent"
-                                                strokeDasharray={163.4}
-                                                className="text-primary-light"
-                                                strokeLinecap="round"
-                                            />
-                                        </svg>
-                                        <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">
-                                            {Math.round(result.confidence)}%
+                <CardContent className="p-10 md:p-14 space-y-12">
+                    {/* Description */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scientific Overview</h4>
+                        </div>
+                        <p className="text-slate-500 text-lg leading-relaxed font-medium italic border-l-4 border-slate-50 pl-8">{result.description}</p>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-12">
+                        {/* Treatments */}
+                        <div className="space-y-8">
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <Thermometer className="w-4 h-4 text-orange-500" />
+                                Remediation Protocol
+                            </h4>
+                            <div className="space-y-5">
+                                {result.treatments.map((t, i) => (
+                                    <div key={i} className="flex gap-4 group">
+                                        <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:bg-primary/10 group-hover:border-primary/20 transition-colors">
+                                            <span className="text-[10px] font-black text-slate-400 group-hover:text-primary">{i + 1}</span>
                                         </div>
+                                        <p className="text-slate-600 text-sm font-medium leading-relaxed pt-1.5">{t}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Hygiene Tip (Card Style) */}
+                            <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-3xl rounded-full" />
+                                <div className="relative z-10 space-y-4">
+                                    <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <Droplets className="w-4 h-4" /> Field Protocol
+                                    </h4>
+                                    <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                                        Ensure all specialized equipment is sanitized using pharmaceutical-grade reagents after contact with analyzed vegetation.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleDownload}
+                                disabled={isDownloading}
+                                className="w-full bg-white border border-slate-100 p-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-primary/20 hover:text-primary hover:bg-slate-50 transition-all shadow-sm"
+                            >
+                                {isDownloading ? (
+                                    <div className="w-4 h-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+                                ) : (
+                                    <Download className="w-4 h-4" />
+                                )}
+                                {isDownloading ? 'Processing Export' : 'Export Scientific Report'}
+                            </button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* ── Sidebar ── */}
+            <div className="lg:col-span-4 space-y-8">
+                {/* Threat card */}
+                <div className="bg-slate-50 border border-slate-100 rounded-[2.5rem] p-8 relative overflow-hidden">
+                    <div className="relative z-10 space-y-8">
+                        <div className="flex justify-between items-center">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Risk Index</span>
+                            {result.isHealthy ? (
+                                <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-primary/20">LOW</span>
+                            ) : (
+                                <span className="bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-red-100">CRITICAL</span>
+                            )}
+                        </div>
+
+                        {!result.isHealthy && (
+                            <div className="space-y-6">
+                                <div className="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center shrink-0">
+                                        <AlertTriangle className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-0.5">Confidence</div>
-                                        <div className="text-sm font-semibold text-white">High Precision</div>
+                                        <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Response Window</div>
+                                        <div className="text-sm font-black text-slate-900">48 Hours Optimal</div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <CardContent className="p-7 space-y-7">
-                            {/* Description */}
-                            <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-                                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                    <div className="w-4 h-4 rounded bg-primary/15 flex items-center justify-center">
-                                        <div className="w-1 h-1 rounded-full bg-primary" />
-                                    </div>
-                                    Biological Impact
-                                </h4>
-                                <p className="text-slate-600 text-sm leading-relaxed">{result.description}</p>
-                            </div>
-
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                {/* Treatments */}
-                                <div>
-                                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <Thermometer className="w-3.5 h-3.5 text-orange-500" />
-                                        Treatment Protocol
-                                    </h4>
-                                    <ul className="space-y-3">
-                                        {result.treatments.map((t, i) => (
-                                            <li key={i} className="flex gap-3 text-slate-600 text-sm">
-                                                <div className="w-5 h-5 rounded-full border border-primary/25 bg-primary/5 flex items-center justify-center shrink-0 mt-0.5">
-                                                    <span className="text-[10px] font-bold text-primary">{i + 1}</span>
-                                                </div>
-                                                {t}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="space-y-4">
-                                    {/* Hygiene tip */}
-                                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                                        <h4 className="text-xs font-semibold text-blue-700 mb-2 flex items-center gap-1.5">
-                                            <Droplets className="w-3.5 h-3.5" /> Hygiene Tip
-                                        </h4>
-                                        <p className="text-xs text-blue-600 leading-relaxed">
-                                            Sanitize all tools with 70% isopropyl alcohol after handling infected vegetation.
-                                        </p>
-                                    </div>
-
-                                    {/* ── Download PDF button ── */}
-                                    <Button
-                                        onClick={handleDownload}
-                                        isLoading={isDownloading}
-                                        variant="ghost"
-                                        className="w-full border border-slate-200 bg-white text-slate-600 gap-2 text-xs hover:border-primary/30 hover:text-primary transition-colors"
-                                        size="md"
-                                    >
-                                        {!isDownloading && <Download className="w-3.5 h-3.5" />}
-                                        {isDownloading ? 'Generating PDF…' : 'Download Full Report (PDF)'}
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* ── Sidebar ── */}
-                    <div className="lg:col-span-4 space-y-5">
-                        {/* Threat card */}
-                        <Card className="bg-slate-950 border-slate-800 text-white overflow-hidden">
-                            <CardContent className="p-6">
-                                <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-4">Threat Assessment</div>
-                                <div className="mb-6">
-                                    {result.isHealthy ? (
-                                        <span className="bg-primary/15 text-primary-light px-3 py-1.5 rounded-lg text-xs font-semibold border border-primary/20">
-                                            LOW RISK
-                                        </span>
-                                    ) : (
-                                        <span className="bg-red-500/15 text-red-400 px-3 py-1.5 rounded-lg text-xs font-semibold border border-red-500/20">
-                                            CRITICAL
-                                        </span>
-                                    )}
-                                </div>
-                                {!result.isHealthy && (
-                                    <div className="p-4 bg-white/5 rounded-xl border border-white/8 space-y-3">
-                                        <div className="flex items-center gap-3">
-                                            <div className="bg-yellow-500/15 p-1.5 rounded-lg">
-                                                <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                                            </div>
-                                            <div>
-                                                <div className="text-[10px] text-slate-400 uppercase tracking-wider">Time to Action</div>
-                                                <div className="text-sm font-semibold text-white">48 Hours Optimal</div>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-slate-400 leading-relaxed">
-                                            This pathogen can spread to adjacent crops via wind or water within days.
-                                        </p>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Specialist card */}
-                        <Card className="border border-slate-100">
-                            <CardContent className="p-6 text-center">
-                                <div className="w-12 h-12 bg-primary/8 border border-primary/15 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                    <Network className="w-5 h-5 text-primary" />
-                                </div>
-                                <h4 className="font-semibold text-slate-900 text-base mb-2 font-display">Need Expert Review?</h4>
-                                <p className="text-xs text-slate-500 mb-5 leading-relaxed">
-                                    Connect with a local agronomist for a physical inspection and localized treatment plan.
+                                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                                    This pathogen exhibits rapid colonization behavior. Immediate quarantine of the affected plot is recommended.
                                 </p>
-                                <Button
-                                    size="sm"
-                                    className="w-full bg-slate-900 hover:bg-slate-800 text-white gap-2"
-                                >
-                                    Connect with Specialist
-                                </Button>
-                            </CardContent>
-                        </Card>
+                            </div>
+                        )}
+
+                        <div className="pt-6 border-t border-slate-100">
+                           <button className="w-full py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
+                              <Share2 className="w-4 h-4" /> Share with Expert
+                           </button>
+                        </div>
                     </div>
-                </motion.div>
+                </div>
+
+                {/* Network card */}
+                <div className="bg-primary rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-primary/20">
+                    <div className="absolute top-0 right-0 p-8 opacity-20">
+                        <Network className="w-20 h-20" />
+                    </div>
+                    <div className="relative z-10 space-y-6">
+                        <h4 className="text-lg font-black uppercase tracking-tight">Expert Network</h4>
+                        <p className="text-white/80 text-xs leading-relaxed font-medium">
+                            Need a second opinion? Connect with our global network of verified agronomists for an in-depth audit.
+                        </p>
+                        <button className="w-full py-4 bg-white text-primary rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">
+                            Connect Now
+                        </button>
+                    </div>
+                </div>
             </div>
-        </section>
+        </motion.div>
     );
 };

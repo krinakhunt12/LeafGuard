@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2, Sparkles, Mic, MicOff, Languages } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 interface Message {
   text: string;
@@ -18,7 +17,6 @@ export const Chatbot: React.FC = () => {
   const [selectedLang, setSelectedLang] = useState('en-IN');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
-  const { i18n } = useTranslation();
 
   const languages = [
     { code: 'en-IN', name: 'English', flag: '🇬🇧' },

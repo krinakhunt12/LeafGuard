@@ -1,33 +1,38 @@
-import { Leaf, Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Leaf, Github, Twitter, Linkedin, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer = () => {
-    return (
-        <footer className="bg-white border-t border-slate-100 pt-16 pb-8">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+    const currentYear = new Date().getFullYear();
 
-                    {/* Brand */}
-                    <div className="col-span-1 sm:col-span-2 lg:col-span-1 space-y-5">
-                        <div className="flex items-center gap-2.5">
-                            <div className="bg-primary/10 p-2 rounded-lg">
-                                <Leaf className="text-primary w-4 h-4" />
+    return (
+        <footer className="bg-white border-t border-slate-50 pt-24 pb-12 relative overflow-hidden">
+            {/* Subtle background element */}
+            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            
+            <div className="container mx-auto px-4 md:px-8">
+                <div className="grid lg:grid-cols-12 gap-16 mb-20">
+
+                    {/* Brand & Mission */}
+                    <div className="lg:col-span-5 space-y-8">
+                        <Link to="/" className="flex items-center gap-3 group">
+                            <div className="bg-primary/10 p-2.5 rounded-xl group-hover:rotate-12 transition-transform">
+                                <Leaf className="text-primary w-5 h-5" />
                             </div>
-                            <span className="text-base font-bold text-slate-900 font-display">LeafGuard</span>
-                        </div>
-                        <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
-                            Leading the revolution in sustainable agriculture through AI-driven plant health diagnostics.
+                            <span className="text-xl font-black text-slate-900 font-display tracking-tight uppercase">LeafGuard</span>
+                        </Link>
+                        <p className="text-slate-400 text-base leading-relaxed max-w-sm font-medium italic">
+                            "Revolutionizing global food security through high-fidelity spectral analysis and digital pathology."
                         </p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-4">
                             {[
-                                { icon: <Twitter className="w-3.5 h-3.5" />, href: '#' },
-                                { icon: <Linkedin className="w-3.5 h-3.5" />, href: '#' },
-                                { icon: <Github className="w-3.5 h-3.5" />, href: 'https://github.com' },
+                                { icon: <Twitter className="w-4 h-4" />, href: '#' },
+                                { icon: <Linkedin className="w-4 h-4" />, href: '#' },
+                                { icon: <Github className="w-4 h-4" />, href: 'https://github.com' },
                             ].map((s, i) => (
                                 <a
                                     key={i}
                                     href={s.href}
-                                    className="p-2 rounded-lg border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 transition-colors duration-200"
+                                    className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-white hover:shadow-lg transition-all"
                                 >
                                     {s.icon}
                                 </a>
@@ -35,52 +40,64 @@ export const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Product */}
-                    <div>
-                        <h4 className="font-semibold text-slate-900 mb-5 text-sm">Product</h4>
-                        <ul className="space-y-3 text-sm text-slate-500">
-                            <li><Link to="/" className="hover:text-primary transition-colors duration-150">Home</Link></li>
-                            <li><Link to="/analyze" className="hover:text-primary transition-colors duration-150">Disease Analysis</Link></li>
-                            <li><Link to="/how-it-works" className="hover:text-primary transition-colors duration-150">How it Works</Link></li>
-                            <li><Link to="/technology" className="hover:text-primary transition-colors duration-150">CNN Model</Link></li>
-                        </ul>
-                    </div>
+                    {/* Navigation Columns */}
+                    <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-10">
+                        <div>
+                            <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-8 border-l-2 border-primary pl-4">Platform</h4>
+                            <ul className="space-y-4">
+                                {[
+                                    { to: '/', l: 'Home' },
+                                    { to: '/analyze', l: 'Disease Analysis' },
+                                    { to: '/how-it-works', l: 'How it Works' },
+                                    { to: '/technology', l: 'CNN Model' }
+                                ].map((item, i) => (
+                                    <li key={i}>
+                                        <Link to={item.to} className="text-sm font-bold text-slate-400 hover:text-primary transition-colors flex items-center gap-1 group">
+                                            {item.l} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                    {/* Resources */}
-                    <div>
-                        <h4 className="font-semibold text-slate-900 mb-5 text-sm">Resources</h4>
-                        <ul className="space-y-3 text-sm text-slate-500">
-                            <li><Link to="/api-docs" className="hover:text-primary transition-colors duration-150">API Documentation</Link></li>
-                            <li><Link to="/privacy" className="hover:text-primary transition-colors duration-150">Privacy Policy</Link></li>
-                            <li><Link to="/terms" className="hover:text-primary transition-colors duration-150">Terms of Service</Link></li>
-                            <li><Link to="/blog" className="hover:text-primary transition-colors duration-150">Agricultural Blog</Link></li>
-                        </ul>
-                    </div>
+                        <div>
+                            <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-8 border-l-2 border-primary pl-4">Resources</h4>
+                            <ul className="space-y-4">
+                                {[
+                                    { to: '/api-docs', l: 'API Documentation' },
+                                    { to: '/privacy', l: 'Privacy Policy' },
+                                    { to: '/terms', l: 'Terms of Service' },
+                                    { to: '/blog', l: 'Agricultural Blog' }
+                                ].map((item, i) => (
+                                    <li key={i}>
+                                        <Link to={item.to} className="text-sm font-bold text-slate-400 hover:text-primary transition-colors flex items-center gap-1 group">
+                                            {item.l} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
 
-                    {/* Newsletter */}
-                    <div>
-                        <h4 className="font-semibold text-slate-900 mb-5 text-sm">Newsletter</h4>
-                        <p className="text-sm text-slate-500 mb-4 leading-relaxed">
-                            Get the latest updates on plant disease research and AI breakthroughs.
-                        </p>
-                        <div className="flex gap-2">
-                            <input
-                                type="email"
-                                placeholder="your@email.com"
-                                className="flex-1 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all"
-                            />
-                            <button className="bg-primary text-white p-2.5 rounded-lg hover:bg-primary-dark transition-colors duration-200">
-                                <Mail className="w-4 h-4" />
-                            </button>
+                        <div className="col-span-2 md:col-span-1 space-y-8">
+                            <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-8 border-l-2 border-primary pl-4">Contact</h4>
+                            <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 leading-none">Direct Channel</p>
+                                <a href="mailto:intelligence@leafguard.ai" className="text-sm font-black text-slate-900 hover:text-primary transition-colors">
+                                    intel@leafguard.ai
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-slate-400">
-                    <p>© 2026 LeafGuard AI. All rights reserved.</p>
-                    <div className="flex items-center gap-5">
+                {/* Bottom Bar */}
+                <div className="pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                        © {currentYear} LeafGuard Precision Agriculture. Built for Sustainable Yields.
+                    </p>
+                    <div className="flex items-center gap-8">
                         {['Cookies', 'Security', 'Compliance'].map(l => (
-                            <a key={l} href="#" className="hover:text-primary transition-colors duration-150">{l}</a>
+                            <a key={l} href="#" className="text-[10px] font-black text-slate-300 uppercase tracking-widest hover:text-primary transition-colors">{l}</a>
                         ))}
                     </div>
                 </div>
