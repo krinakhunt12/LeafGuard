@@ -113,7 +113,7 @@ export const UploadSection = ({ onAnalyze, isPredicting }: UploadSectionProps) =
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
-                                
+
                                 {isPredicting && (
                                     <>
                                         <motion.div

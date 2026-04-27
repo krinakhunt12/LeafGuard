@@ -90,7 +90,7 @@ export const Hero = () => {
                                 </p>
                             </div>
 
-                            <h1 className="text-5xl md:text-7xl font-black leading-[1.1] mb-6 font-display tracking-tight">
+                            <h1 className="text-4xl md:text-6xl font-black leading-[1.1] mb-6 font-display tracking-tight">
                                 {slides[index].title.split(' ').map((word, i) => (
                                     <span key={i} className={word === 'Instantly' || word === 'Precision' || word === 'Agriculture' ? 'text-primary' : ''}>
                                         {word}{' '}

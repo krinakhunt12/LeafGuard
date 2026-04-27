@@ -36,7 +36,7 @@ export const Navbar = () => {
         ...(user ? [{ to: '/dashboard', label: 'Dashboard' }] : []),
     ];
 
-    const navBg = isHomePage 
+    const navBg = isHomePage
         ? (isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 shadow-sm' : 'bg-transparent py-6')
         : 'bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 shadow-sm';
 
@@ -47,7 +47,7 @@ export const Navbar = () => {
         <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${navBg}`}>
             <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-3 group relative z-10">
-                    <motion.div 
+                    <motion.div
                         whileHover={{ rotate: 15 }}
                         className={`p-2 rounded-xl transition-colors duration-300 ${isHomePage && !isScrolled ? 'bg-white/20' : 'bg-primary/10'}`}
                     >
@@ -64,17 +64,16 @@ export const Navbar = () => {
                             <Link
                                 key={to}
                                 to={to}
-                                className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all duration-300 rounded-xl relative group ${
-                                    isActive(to)
+                                className={`px-4 py-2 text-xs font-black uppercase tracking-widest transition-all duration-300 rounded-xl relative group ${isActive(to)
                                         ? (isHomePage && !isScrolled ? 'text-white' : 'text-primary')
                                         : (isHomePage && !isScrolled ? 'text-white/70 hover:text-white' : 'text-slate-500 hover:text-slate-900')
-                                }`}
+                                    }`}
                             >
                                 {label}
                                 {isActive(to) && (
-                                    <motion.div 
+                                    <motion.div
                                         layoutId="navUnderline"
-                                        className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full ${isHomePage && !isScrolled ? 'bg-white' : 'bg-primary'}`} 
+                                        className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full ${isHomePage && !isScrolled ? 'bg-white' : 'bg-primary'}`}
                                     />
                                 )}
                             </Link>
@@ -90,9 +89,9 @@ export const Navbar = () => {
                                     <span className={`text-[10px] font-black uppercase tracking-widest ${subTextColor}`}>Farmer</span>
                                     <span className={`text-sm font-bold ${textColor}`}>{user.full_name.split(' ')[0]}</span>
                                 </div>
-                                <Button 
-                                    variant={isHomePage && !isScrolled ? "outline" : "ghost"} 
-                                    size="sm" 
+                                <Button
+                                    variant={isHomePage && !isScrolled ? "outline" : "ghost"}
+                                    size="sm"
                                     onClick={logout}
                                     className={isHomePage && !isScrolled ? "border-white/20 text-white hover:bg-white/10" : ""}
                                 >
@@ -125,7 +124,7 @@ export const Navbar = () => {
             {/* Mobile Menu */}
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
@@ -137,16 +136,15 @@ export const Navbar = () => {
                                     key={to}
                                     to={to}
                                     onClick={() => setIsOpen(false)}
-                                    className={`block px-4 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all ${
-                                        isActive(to)
+                                    className={`block px-4 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all ${isActive(to)
                                             ? 'bg-primary/10 text-primary'
                                             : 'text-slate-600 hover:bg-slate-50'
-                                    }`}
+                                        }`}
                                 >
                                     {label}
                                 </Link>
                             ))}
-                            
+
                             <div className="pt-6 grid grid-cols-2 gap-4">
                                 {!user ? (
                                     <>
@@ -158,9 +156,9 @@ export const Navbar = () => {
                                         </Link>
                                     </>
                                 ) : (
-                                    <Button 
-                                        variant="ghost" 
-                                        className="w-full col-span-2 rounded-2xl uppercase text-[10px] font-black tracking-widest justify-between" 
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full col-span-2 rounded-2xl uppercase text-[10px] font-black tracking-widest justify-between"
                                         onClick={() => { logout(); setIsOpen(false); }}
                                     >
                                         Logout <span className="text-slate-400 font-medium">({user.full_name})</span>

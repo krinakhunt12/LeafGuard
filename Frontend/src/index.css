@@ -9,9 +9,16 @@
     --color-primary-dark: #15803d;
     --color-accent: #f59e0b;
 
-    --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
-    --radius-3xl: 1.5rem;
+    --color-slate-950: #020617;
+    --color-slate-900: #0f172a;
+    --color-slate-800: #1e293b;
+    --color-slate-700: #334155;
+    --color-slate-600: #475569;
+
+    --radius-none: 0px;
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
 }
 
 @layer base {

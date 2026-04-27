@@ -70,14 +70,14 @@ export default function Analyze() {
             <div className="container mx-auto px-4 md:px-8 relative z-10">
                 {/* Page Header */}
                 <div className="max-w-5xl mx-auto mb-20 text-center space-y-6">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20"
                     >
                         <Microscope className="w-3 h-3" /> Digital Pathology
                     </motion.div>
-                    <h1 className="text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight uppercase">
+                    <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight uppercase">
                         Precision <span className="text-primary">Analysis</span> Studio
                     </h1>
                     <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed italic">
@@ -96,7 +96,7 @@ export default function Analyze() {
                                     { icon: <Lightbulb />, t: "Diffuse Lighting", d: "Avoid harsh shadows or direct sunlight; overcast natural light provides best results." },
                                     { icon: <ShieldCheck />, t: "Surface Hygiene", d: "Remove dirt or moisture from the leaf surface before capturing the image." }
                                 ].map((tip, i) => (
-                                    <motion.div 
+                                    <motion.div
                                         key={i}
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
@@ -116,7 +116,7 @@ export default function Analyze() {
                         </div>
 
                         <div className="bg-slate-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
-                             <div className="relative z-10">
+                            <div className="relative z-10">
                                 <Zap className="w-8 h-8 text-primary mb-6" />
                                 <h3 className="text-lg font-black uppercase tracking-tight mb-4">Neural Mapping</h3>
                                 <p className="text-slate-400 text-xs leading-relaxed font-medium mb-6">
@@ -124,11 +124,11 @@ export default function Analyze() {
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <div className="flex -space-x-2">
-                                        {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-white/10 border-2 border-slate-950" />)}
+                                        {[1, 2, 3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-white/10 border-2 border-slate-950" />)}
                                     </div>
                                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">1.2M Samples Trained</span>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     </div>
 
@@ -160,7 +160,7 @@ export default function Analyze() {
 
                 {/* Resources Quick Link */}
                 {!result && !isPredicting && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}

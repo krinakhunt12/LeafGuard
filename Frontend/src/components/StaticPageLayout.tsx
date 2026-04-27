@@ -24,7 +24,7 @@ export const StaticPageLayout: React.FC<StaticPageLayoutProps> = ({ title, highl
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border border-primary/20">
                       Corporate Transparency
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight leading-none">
+                    <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-none">
                         {title} {highlight && <span className="text-primary">{highlight}</span>}
                     </h1>
                     <p className="text-xl text-slate-500 font-medium max-w-2xl leading-relaxed italic">
