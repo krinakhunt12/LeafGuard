@@ -16,10 +16,15 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 *   **Technical Goal**: Implement authentication (Supabase/Firebase) and a PostgreSQL database to store diagnosis history.
 *   **Benefit**: Allows farmers to monitor the effectiveness of treatments over weeks or months.
 
-### 🤖 AI Agricultural Chatbot
-*   **Description**: A specialized assistant for follow-up questions.
-*   **Technical Goal**: Integrate Gemini API or a RAG (Retrieval-Augmented Generation) system using the platform's blog content.
-*   **Benefit**: Provides instant, conversational advice on specific local pests and soil health.
+### 🤖 Multilingual AI Agronomist with Voice Support (✅ Completed)
+*   **Description**: A specialized assistant with support for English, Hindi, and Gujarati voice commands.
+*   **Technical Goal**: Integrated Web Speech API for voice-to-text and Mistral/Gemini for agricultural reasoning.
+*   **Benefit**: Provides instant, conversational advice accessible to all literacy levels via hands-free interaction.
+
+### 👓 AR Leaf Scanner (Augmented Reality)
+*   **Description**: Future-tech visualization for on-field disease identification.
+*   **Technical Goal**: Use WebXR or specialized AR libraries to overlay health metrics directly onto the camera view.
+*   **Impact**: Educates farmers by comparing infected leaves with healthy 3D models in real-time.
 
 ---
 
@@ -35,7 +40,7 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 *   **Technical Goal**: Implement `react-i18next` with support for Hindi, Spanish, Swahili, and more.
 *   **Benefit**: Makes professional-grade AI accessible to non-English speaking farming communities.
 
-### 🤝 Farmer-to-Expert Community Forum
+### 🤝 Farmer-to-Expert Community Forum (✅ Completed)
 *   **Description**: A collaborative space for farmers to share field photos and get advice.
 *   **Technical Goal**: Build a real-time discussion board with "Verified Agronomist" badges for agricultural experts.
 *   **Benefit**: Builds a support network and leverages human expertise alongside AI.
@@ -46,7 +51,7 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 
 ### 🛰️ Satellite-Based Crop Monitoring (NDVI)
 *   **Description**: Monitor field health from space using satellite imagery.
-*   **Technical Goal**: Integrate Sentinel-2 satellite data to calculate NDVI (Normalized Difference Vegetation Index) for farmer fields.
+*   **Technical Goal**: Integrate Sentinel-2 satellite data to calculate NDVI (Normalized Difference Vegetation Index).
 *   **Benefit**: Identifies crop stress and irrigation needs across large areas without manual inspection.
 
 ### ☁️ Weather-Based Risk Assessment
@@ -54,10 +59,10 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 *   **Technical Goal**: Integrate OpenWeatherMap API to correlate humidity/temp with disease probability.
 *   **Benefit**: "Prevention is better than cure"—alerts farmers to spray protective coatings before a fungal outbreak.
 
-### 📲 Progressive Web App (PWA)
-*   **Description**: Enable offline capabilities for the application.
-*   **Technical Goal**: Configure Service Workers and IndexedDB for offline image caching and syncing.
-*   **Benefit**: Essential for remote fields where 4G/5G signals are unstable.
+### 📅 AI-Driven "Crop Calendar" & Scheduler
+*   **Description**: Personalized roadmap for the entire farming season.
+*   **Technical Goal**: Generate custom schedules based on crop type, planting date, and local climate data.
+*   **Benefit**: Proactive planning for fertilization, pesticide cycles, and harvest windows.
 
 ---
 
@@ -68,10 +73,15 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 *   **Technical Goal**: Create an affiliate or local store API integration.
 *   **Benefit**: Closes the loop between "Identifying the problem" and "Solving it."
 
-### 📑 AI-Generated "Health Certificates" for Exports
+### 📑 AI-Generated "Health Certificates" for Exports (✅ Completed)
 *   **Description**: Professional multi-page crop health reports for insurance, loans, or export agencies.
 *   **Technical Goal**: Use `jspdf` to generate verified certificates with timestamped diagnosis history and trend charts.
 *   **Benefit**: Provides farmers with legal-grade proof of crop quality to unlock financial and global trade opportunities.
+
+### 🛡️ Smart Crop Insurance Portal
+*   **Description**: Use diagnosis history to qualify for agricultural insurance.
+*   **Technical Goal**: Secure portal for insurance providers to verify "Health Certificates" and historical care data.
+*   **Benefit**: Lowers premiums for diligent farmers and provides financial security based on verifiable data.
 
 ---
 
@@ -79,7 +89,9 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 
 | Phase | Features | Difficulty |
 | :--- | :--- | :--- |
-| **Phase 1** | Camera Capture + Enhanced PDF | Medium |
-| **Phase 2** | Weather Integration + PWA | High |
-| **Phase 3** | User Dashboard + Chatbot | High |
-| **Phase 4** | Global Heatmap + Marketplace | Very High |
+| **Phase 1** | Camera Capture + Health Certificates (✅) | Medium |
+| **Phase 2** | Voice AI Assistant (✅) + Community Forum (✅) | High |
+| **Phase 3** | Weather Integration + PWA | High |
+| **Phase 4** | Crop Calendar + Satellite NDVI | Very High |
+| **Phase 5** | AR Scanner + Marketplace | Extreme |
+| **Phase 6** | Insurance Portal | Very High |

@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ResultSkeleton } from '../components/PageSkeleton';
+import { generateHealthCertificate } from '../lib/generateHealthCertificate';
+import toast from 'react-hot-toast';
 
 interface Diagnosis {
   id: number;
@@ -26,6 +28,26 @@ const Dashboard: React.FC = () => {
   const { user, token } = useAuth();
   const [history, setHistory] = useState<Diagnosis[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerateCertificate = async () => {
+    if (history.length === 0) {
+      toast.error('No diagnosis history available to generate a certificate.');
+      return;
+    }
+
+    setIsGenerating(true);
+    const toastId = toast.loading('Preparing health certificate...');
+    try {
+      await generateHealthCertificate(history, user);
+      toast.success('Certificate generated successfully!', { id: toastId });
+    } catch (error) {
+      console.error('Failed to generate certificate:', error);
+      toast.error('Failed to generate certificate. Please try again.', { id: toastId });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -65,13 +87,23 @@ const Dashboard: React.FC = () => {
     <div className="pt-28 pb-20 min-h-screen bg-[#FDFDFD]">
       <div className="container mx-auto px-4 md:px-6">
         {/* Header Section */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-black text-slate-900 mb-2">
-            Farmer <span className="text-primary">Dashboard</span>
-          </h1>
-          <p className="text-slate-500 font-medium">
-            Welcome back, {user?.full_name}. Monitor your crop's health journey.
-          </p>
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 mb-2">
+              Farmer <span className="text-primary">Dashboard</span>
+            </h1>
+            <p className="text-slate-500 font-medium">
+              Welcome back, {user?.full_name}. Monitor your crop's health journey.
+            </p>
+          </div>
+          <button
+            onClick={handleGenerateCertificate}
+            disabled={isGenerating || history.length === 0}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-200"
+          >
+            <FileText className="w-5 h-5" />
+            {isGenerating ? 'Generating...' : 'Health Certificate'}
+          </button>
         </div>
 
         {/* Stats Grid */}

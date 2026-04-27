@@ -13,6 +13,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
+    is_expert: bool
     created_at: datetime
 
     class Config:
@@ -25,3 +26,37 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+# Forum Schemas
+class CommentBase(BaseModel):
+    content: str
+
+class CommentCreate(CommentBase):
+    post_id: int
+
+class Comment(CommentBase):
+    id: int
+    created_at: datetime
+    user_id: int
+    author: User
+
+    class Config:
+        from_attributes = True
+
+class PostBase(BaseModel):
+    title: str
+    content: str
+    image_url: Optional[str] = None
+
+class PostCreate(PostBase):
+    pass
+
+class Post(PostBase):
+    id: int
+    created_at: datetime
+    user_id: int
+    author: User
+    comments: List[Comment] = []
+
+    class Config:
+        from_attributes = True

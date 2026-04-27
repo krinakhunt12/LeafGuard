@@ -206,8 +206,17 @@ class AgroChatbot:
         self.index, self.chunks = load_index()
         self.model = SentenceTransformer(EMBED_MODEL)
 
-    def get_response(self, query: str) -> dict:
-        lang = detect_language(query)
+    def get_response(self, query: str, language: str = "en-IN") -> dict:
+        # Map frontend language code to internal language
+        lang_map = {"hi-IN": "hindi", "gu-IN": "gujarati", "en-IN": "english"}
+        
+        # Auto-detect from text content first; fallback to selected language
+        detected = detect_language(query)
+        if detected != "english":
+            lang = detected
+        else:
+            lang = lang_map.get(language, "english")
+        
         chunk, score = retrieve(query, self.index, self.chunks, self.model)
         
         if chunk and score >= BASE_SIMILARITY_THRESHOLD:

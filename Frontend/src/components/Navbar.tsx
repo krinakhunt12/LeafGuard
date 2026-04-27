@@ -1,4 +1,4 @@
-import { Leaf, Menu, X, Github, Moon, Sun } from 'lucide-react';
+import { Leaf, Menu, X, Github, Moon, Sun, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/Button';
 import { Link, useLocation } from 'react-router-dom';
@@ -24,6 +24,14 @@ export const Navbar = () => {
 
     const isActive = (path: string) => location.pathname === path;
 
+    const navLinks = [
+        { to: '/', label: 'Home' },
+        { to: '/how-it-works', label: 'How it Works' },
+        { to: '/technology', label: 'Technology' },
+        { to: '/forum', label: 'Community' },
+        ...(user ? [{ to: '/dashboard', label: 'Dashboard' }] : []),
+    ];
+
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
             isScrolled
@@ -41,12 +49,7 @@ export const Navbar = () => {
                 </Link>
 
                 <div className="hidden md:flex items-center gap-6">
-                    {[
-                        { to: '/', label: 'Home' },
-                        { to: '/how-it-works', label: 'How it Works' },
-                        { to: '/technology', label: 'Technology' },
-                        ...(user ? [{ to: '/dashboard', label: 'Dashboard' }] : []),
-                    ].map(({ to, label }) => (
+                    {navLinks.map(({ to, label }) => (
                         <Link
                             key={to}
                             to={to}
@@ -102,13 +105,7 @@ export const Navbar = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 p-5 space-y-1 animate-fade-in">
-                    {[
-                        { to: '/', label: 'Home' },
-                        { to: '/how-it-works', label: 'How it Works' },
-                        { to: '/analyze', label: 'Analyze Leaf' },
-                        { to: '/technology', label: 'Technology' },
-                        ...(user ? [{ to: '/dashboard', label: 'Dashboard' }] : []),
-                    ].map(({ to, label }) => (
+                    {navLinks.map(({ to, label }) => (
                         <Link
                             key={to}
                             to={to}

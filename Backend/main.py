@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import uvicorn
 import numpy as np
@@ -7,7 +8,10 @@ from PIL import Image
 import tensorflow as tf
 import os
 import io
+import uuid
+import shutil
 from dotenv import load_dotenv
+from typing import List, Optional
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,7 +23,6 @@ import schemas
 import auth
 from database import engine, get_db
 from fastapi.security import OAuth2PasswordBearer
-from openai import OpenAI
 from chatbot_engine import AgroChatbot
 
 # Create database tables
@@ -194,12 +197,55 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5174",
         "http://127.0.0.1:5174",
-        "http://localhost:3000", # Common React port
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve uploaded images as static files
+UPLOAD_DIR = "forum_uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/forum_uploads", StaticFiles(directory=UPLOAD_DIR), name="forum_uploads")
+
+@app.post("/upload/forum-image")
+async def upload_forum_image(
+    file: UploadFile = File(...),
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    """Upload a forum image and return its URL."""
+    # Validate auth
+    email = auth.get_current_user(db, token)
+    if not email:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Validate file type
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Only image files are allowed.")
+    
+    # Validate file size (5MB max)
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Max 5MB allowed.")
+    
+    # Validate it's a real image
+    try:
+        img = Image.open(io.BytesIO(content))
+        img.verify()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image file.")
+    
+    # Save with unique name
+    ext = os.path.splitext(file.filename or "image.jpg")[1] or ".jpg"
+    filename = f"{uuid.uuid4().hex}{ext}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    
+    with open(file_path, "wb") as f:
+        f.write(content)
+    
+    return {"url": f"http://127.0.0.1:8000/forum_uploads/{filename}"}
 
 def read_file_as_image(data) -> np.ndarray:
     image = Image.open(io.BytesIO(data)).convert('RGB')
@@ -225,7 +271,6 @@ async def predict(
         predicted_class = class_names[predicted_class_index]
         confidence = float(np.max(predictions[0]))
         
-        # Get current user if token is valid (optional for predict)
         current_user_email = auth.get_current_user(db, token)
         db_user = None
         if current_user_email:
@@ -237,7 +282,6 @@ async def predict(
             "isHealthy": "healthy" in predicted_class.lower()
         })
         
-        # Save to database
         db_diagnosis = models.Diagnosis(
             disease_name=predicted_class.replace("___", " ").replace("_", " "),
             confidence=round(confidence * 100, 2),
@@ -288,7 +332,6 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/login", response_model=schemas.Token)
 def login(user_credentials: schemas.UserCreate, db: Session = Depends(get_db)):
-    # Note: schemas.UserCreate is used here for simplicity (email/password)
     db_user = db.query(models.User).filter(models.User.email == user_credentials.email).first()
     if not db_user or not auth.verify_password(user_credentials.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -316,20 +359,65 @@ def get_diagnoses(token: str = Depends(oauth2_scheme), db: Session = Depends(get
 @app.post("/chat")
 async def chat(request: dict):
     message = request.get("message")
+    language = request.get("language", "en-IN")
     if not message:
         raise HTTPException(status_code=400, detail="Message is required")
     
     try:
-        response_data = chatbot.get_response(message)
+        response_data = chatbot.get_response(message, language=language)
         return {"response": response_data["response"]}
     except Exception as e:
         print(f"Chatbot error: {e}")
         return {"response": f"Chatbot Error: {str(e)}"}
 
-def read_file_as_image(data) -> np.ndarray:
-    image = Image.open(io.BytesIO(data)).convert('RGB')
-    image = image.resize((128, 128))
-    return np.array(image)
+# --- Community Forum Routes ---
+
+@app.get("/forum/posts", response_model=List[schemas.Post])
+def get_forum_posts(db: Session = Depends(get_db)):
+    return db.query(models.ForumPost).order_by(models.ForumPost.created_at.desc()).all()
+
+@app.post("/forum/posts", response_model=schemas.Post)
+def create_forum_post(
+    post: schemas.PostCreate,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    email = auth.get_current_user(db, token)
+    user = db.query(models.User).filter(models.User.email == email).first()
+    
+    db_post = models.ForumPost(
+        **post.model_dump(),
+        user_id=user.id
+    )
+    db.add(db_post)
+    db.commit()
+    db.refresh(db_post)
+    return db_post
+
+@app.get("/forum/posts/{post_id}", response_model=schemas.Post)
+def get_forum_post(post_id: int, db: Session = Depends(get_db)):
+    db_post = db.query(models.ForumPost).filter(models.ForumPost.id == post_id).first()
+    if not db_post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return db_post
+
+@app.post("/forum/comments", response_model=schemas.Comment)
+def create_forum_comment(
+    comment: schemas.CommentCreate,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    email = auth.get_current_user(db, token)
+    user = db.query(models.User).filter(models.User.email == email).first()
+    
+    db_comment = models.ForumComment(
+        **comment.model_dump(),
+        user_id=user.id
+    )
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
