@@ -1,128 +1,178 @@
 import { motion } from 'framer-motion';
-import { Camera, BrainCircuit, ClipboardCheck, Sprout } from 'lucide-react';
+import React from 'react';
+import { Camera, BrainCircuit, ClipboardCheck, Sprout, ArrowDown, CheckCircle, Shield, Zap } from 'lucide-react';
 
 export const HowItWorks = () => {
     const steps = [
         {
             icon: <Camera className="w-6 h-6" />,
             title: "Leaf Imaging",
-            description: "Submit a high-fidelity image of the leaf surface using our secure upload interface.",
+            description: "Submit a high-fidelity image of the leaf surface using our secure upload interface or real-time camera capture.",
             color: "text-emerald-600",
             bg: "bg-emerald-50",
             border: "border-emerald-100",
+            details: ["Macro focus", "Diffuse lighting", "Top surface view"]
         },
         {
             icon: <BrainCircuit className="w-6 h-6" />,
             title: "Neural Mapping",
-            description: "Our proprietary CNN architecture identifies pathological markers across 512+ feature maps.",
+            description: "Our proprietary CNN architecture identifies pathological markers across 512+ specialized feature maps.",
             color: "text-primary",
             bg: "bg-green-50",
             border: "border-green-100",
+            details: ["Pattern recognition", "Lesion segmentation", "Texture analysis"]
         },
         {
             icon: <ClipboardCheck className="w-6 h-6" />,
             title: "Analysis Report",
-            description: "Receive a comprehensive diagnostic summary with high-confidence classification.",
+            description: "Receive a comprehensive diagnostic summary with high-confidence classification and localized treatment plans.",
             color: "text-amber-600",
             bg: "bg-amber-50",
             border: "border-amber-100",
+            details: ["Confidence score", "Treatment guides", "Prevention tips"]
         },
         {
             icon: <Sprout className="w-6 h-6" />,
             title: "Growth Recovery",
-            description: "Implement precision treatment protocols to restore plant health and maximize yield.",
+            description: "Implement precision treatment protocols to restore plant health and maximize seasonal crop yield.",
             color: "text-teal-600",
             bg: "bg-teal-50",
             border: "border-teal-100",
+            details: ["Yield protection", "Healthy harvest", "Soil recovery"]
         }
     ];
 
     return (
         <section id="how-it-works" className="section-padding bg-white relative overflow-hidden">
-            {/* Subtle background pattern */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,_rgba(22,163,74,0.04)_0%,_transparent_60%)]" />
+            {/* Ambient Background Elements */}
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-green-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
             <div className="container mx-auto px-4 md:px-8 relative">
 
                 {/* Header */}
-                <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        <span className="text-slate-500 font-medium text-xs uppercase tracking-widest">Workflow</span>
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
+                <div className="text-center max-w-3xl mx-auto mb-24 space-y-6">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-full"
+                    >
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                        <span className="text-slate-500 font-black text-[10px] uppercase tracking-widest">The Scientific Process</span>
+                    </motion.div>
+                    <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight tracking-tight">
                         Precision <span className="text-gradient">Diagnostics</span>{" "}
-                        <br />Simplified
+                        <br />Built for Farmers
                     </h2>
-                    <p className="text-slate-500 text-lg leading-relaxed">
-                        A seamless bridge between cutting-edge laboratory pathology and on-field agricultural practice.
+                    <p className="text-slate-500 text-lg md:text-xl leading-relaxed font-medium">
+                        A seamless bridge between cutting-edge laboratory pathology and on-field agricultural practice, delivering results in seconds.
                     </p>
                 </div>
 
-                {/* Steps */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                {/* Vertical Process for Desktop, Grid for Mobile */}
+                <div className="space-y-32 relative">
+                    {/* Connecting Line (Desktop) */}
+                    <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-100 hidden lg:block -translate-x-1/2" />
+
                     {steps.map((step, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: i * 0.1 }}
-                            className="group"
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                            className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
                         >
-                            <div className={`p-6 rounded-2xl border ${step.border} bg-white hover:border-slate-200 transition-colors duration-200`}>
-                                {/* Step number + icon */}
-                                <div className="flex items-start justify-between mb-5">
-                                    <div className={`w-11 h-11 ${step.bg} ${step.color} rounded-xl flex items-center justify-center border ${step.border}`}>
-                                        {step.icon}
+                            {/* Visual Side */}
+                            <div className="flex-1 w-full">
+                                <div className="relative group">
+                                    <div className={`absolute -inset-4 rounded-[2.5rem] ${step.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                    <div className="relative bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-100 p-8 md:p-12 overflow-hidden">
+                                        <div className={`absolute top-0 right-0 p-10 font-black text-8xl text-slate-50/50 pointer-events-none select-none tracking-tighter`}>
+                                            0{i + 1}
+                                        </div>
+                                        <div className={`w-16 h-16 ${step.bg} ${step.color} rounded-2xl flex items-center justify-center mb-8 border ${step.border} group-hover:scale-110 transition-transform duration-500`}>
+                                            {step.icon}
+                                        </div>
+                                        <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase tracking-tight">{step.title}</h3>
+                                        <p className="text-slate-500 text-lg leading-relaxed mb-8">
+                                            {step.description}
+                                        </p>
+                                        <div className="flex flex-wrap gap-3">
+                                            {step.details.map((detail, j) => (
+                                                <span key={j} className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold border border-slate-100">
+                                                    <CheckCircle className={`w-3 h-3 ${step.color}`} />
+                                                    {detail}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <span className="text-2xl font-bold text-slate-100 font-display">0{i + 1}</span>
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-2 font-display">{step.title}</h3>
-                                <p className="text-slate-500 text-sm leading-relaxed">{step.description}</p>
+                            </div>
+
+                            {/* Separator / Timeline Marker (Desktop) */}
+                            <div className="hidden lg:flex w-12 h-12 bg-white border-2 border-slate-100 rounded-full items-center justify-center relative z-10 shrink-0 shadow-sm">
+                                <ArrowDown className="w-5 h-5 text-slate-300" />
+                            </div>
+
+                            {/* Info Side (Placeholder for visual balance on desktop) */}
+                            <div className="flex-1 hidden lg:block">
+                                <div className="p-12 border-2 border-dashed border-slate-50 rounded-[3rem] opacity-40">
+                                   <div className="w-full h-40 bg-slate-50/50 rounded-2xl flex items-center justify-center">
+                                      <Zap className={`w-12 h-12 ${step.color} opacity-20`} />
+                                   </div>
+                                </div>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                {/* Feature banner */}
+                {/* Trust Banner */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mt-16 rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden"
+                    className="mt-40 rounded-[3rem] bg-slate-950 border border-slate-800 relative overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(22,163,74,0.18),_transparent_60%)]" />
-                    <div className="relative z-10 grid lg:grid-cols-2 gap-12 p-10 lg:p-16 items-center">
-                        <div className="space-y-8">
-                            <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight font-display">
-                                Engineered for <br />
-                                <span className="text-primary">Global Impact</span>
-                            </h3>
-                            <div className="space-y-5">
+                    <div className="relative z-10 grid lg:grid-cols-2 gap-16 p-10 lg:p-20 items-center">
+                        <div className="space-y-10">
+                            <div className="space-y-4">
+                                <h3 className="text-3xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight">
+                                    Global Impact <br />
+                                    <span className="text-primary">Reliable Results</span>
+                                </h3>
+                                <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                                    Trusted by thousands of farmers across 15+ countries to secure their harvest against unpredictable disease outbreaks.
+                                </p>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-8">
                                 {[
-                                    { t: "Scientific Validation", d: "Validated against 85,000+ certified pathology samples." },
-                                    { t: "Privacy First", d: "End-to-end encrypted image processing protocols." },
-                                    { t: "Scalable Infrastructure", d: "Low-latency response across all geographical regions." }
+                                    { icon: <Shield />, t: "Secure Data", d: "End-to-end encrypted image processing." },
+                                    { icon: <Zap />, t: "Instant Scan", d: "Results in under 1 second." }
                                 ].map((item, i) => (
                                     <div key={i} className="flex gap-4">
-                                        <div className="mt-0.5 w-5 h-5 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+                                            {React.cloneElement(item.icon as React.ReactElement<any>, { className: "w-5 h-5" })}
                                         </div>
                                         <div>
-                                            <div className="text-white font-semibold text-sm">{item.t}</div>
-                                            <div className="text-slate-400 text-sm mt-0.5">{item.d}</div>
+                                            <div className="text-white font-black text-xs uppercase tracking-widest">{item.t}</div>
+                                            <div className="text-slate-500 text-xs mt-1 leading-relaxed">{item.d}</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                        <div className="rounded-xl overflow-hidden border border-white/10 aspect-video lg:aspect-auto lg:h-72">
-                            <img
-                                src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=1200"
-                                alt="Modern Farming"
-                                className="w-full h-full object-cover grayscale-[30%]"
-                            />
+                        <div className="relative">
+                            <div className="absolute -inset-4 bg-primary/20 blur-[80px] rounded-full" />
+                            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                                <img
+                                    src="https://images.unsplash.com/photo-1599933310632-4f9640958700?auto=format&fit=crop&q=80&w=1200"
+                                    alt="Precision Farming"
+                                    className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+                                />
+                            </div>
                         </div>
                     </div>
                 </motion.div>
