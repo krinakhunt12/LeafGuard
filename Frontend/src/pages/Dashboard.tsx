@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import {
   History,
@@ -12,22 +12,12 @@ import {
 import { Link } from 'react-router-dom';
 import { ResultSkeleton } from '../components/PageSkeleton';
 import { generateHealthCertificate } from '../lib/generateHealthCertificate';
+import { useDiagnoses } from '../api';
 import toast from 'react-hot-toast';
 
-interface Diagnosis {
-  id: number;
-  disease_name: string;
-  confidence: number;
-  description: string;
-  treatments: string[];
-  is_healthy: boolean;
-  created_at: string;
-}
-
 const Dashboard: React.FC = () => {
-  const { user, token } = useAuth();
-  const [history, setHistory] = useState<Diagnosis[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const { data: history = [], isLoading } = useDiagnoses();
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerateCertificate = async () => {
@@ -48,29 +38,6 @@ const Dashboard: React.FC = () => {
       setIsGenerating(false);
     }
   };
-
-  useEffect(() => {
-    const fetchHistory = async () => {
-      if (!token) return;
-      try {
-        const response = await fetch('http://127.0.0.1:8000/diagnoses', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setHistory(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch history:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, [token]);
 
   if (isLoading) {
     return (
@@ -93,13 +60,13 @@ const Dashboard: React.FC = () => {
               Farmer <span className="text-primary">Dashboard</span>
             </h1>
             <p className="text-slate-500 font-medium">
-              Welcome back, {user?.full_name}. Monitor your crop's health journey.
+              Welcome back, {user?.fullName}. Monitor your crop's health journey.
             </p>
           </div>
           <button
             onClick={handleGenerateCertificate}
             disabled={isGenerating || history.length === 0}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-200"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FileText className="w-5 h-5" />
             {isGenerating ? 'Generating...' : 'Health Certificate'}
@@ -167,11 +134,11 @@ const Dashboard: React.FC = () => {
                       <td className="px-6 py-4 text-sm text-slate-600 font-medium">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-slate-400" />
-                          {new Date(item.created_at).toLocaleDateString()}
+                          {new Date(item.timestamp).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm font-bold text-slate-900">{item.disease_name}</span>
+                        <span className="text-sm font-bold text-slate-900">{item.diseaseName}</span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px] mb-1">
@@ -183,15 +150,11 @@ const Dashboard: React.FC = () => {
                         <span className="text-[10px] font-black text-slate-500">{item.confidence}%</span>
                       </td>
                       <td className="px-6 py-4">
-                        {item.is_healthy ? (
-                          <span className="px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
-                            Healthy
-                          </span>
-                        ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wider">
-                            Diseased
-                          </span>
-                        )}
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                          item.isHealthy ? 'bg-primary/10 text-primary' : 'bg-red-100 text-red-600'
+                        }`}>
+                          {item.isHealthy ? 'Healthy' : 'Infected'}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button className="text-slate-400 hover:text-slate-900 transition-colors">

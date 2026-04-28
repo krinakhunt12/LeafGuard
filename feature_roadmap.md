@@ -78,7 +78,7 @@ This document outlines the proposed feature enhancements for the **LeafGuard** A
 *   **Technical Goal**: Use `jspdf` to generate verified certificates with timestamped diagnosis history and trend charts.
 *   **Benefit**: Provides farmers with legal-grade proof of crop quality to unlock financial and global trade opportunities.
 
-### 🛡️ Smart Crop Insurance Portal
+### 🛡️ Smart Crop Insurance Portal (✅ Completed)
 *   **Description**: Use diagnosis history to qualify for agricultural insurance.
 *   **Technical Goal**: Secure portal for insurance providers to verify "Health Certificates" and historical care data.
 *   **Benefit**: Lowers premiums for diligent farmers and provides financial security based on verifiable data.

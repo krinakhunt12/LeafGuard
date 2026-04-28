@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { 
   MessageSquare, 
-  User, 
   Clock, 
   Plus, 
   Send, 
   ShieldCheck, 
-  Image as ImageIcon,
   Loader2,
   ChevronRight,
   X,
@@ -15,6 +13,7 @@ import {
   Trash2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useForumPosts, useCreatePost, useCreateComment, API_BASE_URL } from '../api';
 
 interface Comment {
   id: number;
@@ -22,57 +21,24 @@ interface Comment {
   created_at: string;
   user_id: number;
   author: {
-    full_name: string;
-    is_expert: boolean;
+    fullName: string;
+    isExpert: boolean;
   };
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  image_url?: string;
-  created_at: string;
-  user_id: number;
-  author: {
-    full_name: string;
-    is_expert: boolean;
-  };
-  comments: Comment[];
 }
 
 const ForumPage: React.FC = () => {
   const { user, token } = useAuth();
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPosting, setIsPosting] = useState(false);
+  const { data: posts = [], isLoading } = useForumPosts();
+  const { mutate: createPost, isPending: isPosting } = useCreatePost();
+  const { mutate: addComment } = useCreateComment();
+  
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPost, setNewPost] = useState({ title: '', content: '' });
   const [expandedPost, setExpandedPost] = useState<number | null>(null);
   const [commentTexts, setCommentTexts] = useState<Record<number, string>>({});
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [commentingPost, setCommentingPost] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:8000/forum/posts');
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch posts:', error);
-      toast.error('Could not load forum posts.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   const handleImageFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -110,56 +76,47 @@ const ForumPage: React.FC = () => {
     }
     if (!newPost.title.trim() || !newPost.content.trim()) return;
 
-    setIsPosting(true);
-    try {
-      // Upload image to server if present
+    // Image upload logic stays somewhat manual due to specific flow, 
+    // but the post creation now uses the mutation.
+    const processPost = async () => {
       let imageUrl: string | undefined = undefined;
       if (uploadedImage && fileInputRef.current?.files?.[0]) {
         const file = fileInputRef.current.files[0];
         const formData = new FormData();
         formData.append('file', file);
         
-        const uploadResp = await fetch('http://127.0.0.1:8000/upload/forum-image', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
-        });
-        if (uploadResp.ok) {
-          const uploadData = await uploadResp.json();
-          imageUrl = uploadData.url;
-        } else {
-          // Fallback: store as base64
-          imageUrl = uploadedImage;
+        try {
+          const uploadResp = await fetch(`${API_BASE_URL}/upload/forum-image`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+          });
+          if (uploadResp.ok) {
+            const uploadData = await uploadResp.json();
+            imageUrl = uploadData.url;
+          }
+        } catch (e) {
+          console.error("Image upload failed", e);
         }
       }
 
-      const response = await fetch('http://127.0.0.1:8000/forum/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      createPost({
+        ...newPost,
+        image_url: imageUrl || undefined
+      }, {
+        onSuccess: () => {
+          toast.success('Post shared with the community!');
+          setNewPost({ title: '', content: '' });
+          setUploadedImage(null);
+          setShowCreateModal(false);
         },
-        body: JSON.stringify({
-          ...newPost,
-          image_url: imageUrl || undefined
-        })
+        onError: (err: any) => {
+          toast.error(err.message || 'Failed to create post.');
+        }
       });
+    };
 
-      if (response.ok) {
-        toast.success('Post shared with the community!');
-        setNewPost({ title: '', content: '' });
-        setUploadedImage(null);
-        setShowCreateModal(false);
-        fetchPosts();
-      } else {
-        const err = await response.json();
-        toast.error(err.detail || 'Failed to create post.');
-      }
-    } catch (error) {
-      toast.error('Failed to create post.');
-    } finally {
-      setIsPosting(false);
-    }
+    processPost();
   };
 
   const handleAddComment = async (postId: number) => {
@@ -170,29 +127,15 @@ const ForumPage: React.FC = () => {
     const text = commentTexts[postId]?.trim();
     if (!text) return;
 
-    setCommentingPost(postId);
-    try {
-      const response = await fetch('http://127.0.0.1:8000/forum/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ content: text, post_id: postId })
-      });
-
-      if (response.ok) {
+    addComment({ content: text, post_id: postId }, {
+      onSuccess: () => {
         setCommentTexts(prev => ({ ...prev, [postId]: '' }));
-        fetchPosts();
         toast.success('Comment posted!');
-      } else {
+      },
+      onError: () => {
         toast.error('Failed to post comment.');
       }
-    } catch (error) {
-      toast.error('Failed to post comment.');
-    } finally {
-      setCommentingPost(null);
-    }
+    });
   };
 
   if (isLoading) {
@@ -233,13 +176,13 @@ const ForumPage: React.FC = () => {
                 <div className="p-6 md:p-8">
                   {/* Post Meta */}
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm ${post.author.is_expert ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
-                      {post.author.full_name.charAt(0).toUpperCase()}
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm ${post.author.isExpert ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
+                      {post.author.fullName.charAt(0).toUpperCase()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900">{post.author.full_name}</span>
-                        {post.author.is_expert && (
+                        <span className="font-bold text-slate-900">{post.author.fullName}</span>
+                        {post.author.isExpert && (
                           <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-blue-100">
                             <ShieldCheck className="w-3 h-3" /> Verified Agronomist
                           </span>
@@ -292,15 +235,15 @@ const ForumPage: React.FC = () => {
                         {post.comments.length === 0 && (
                           <p className="text-slate-400 text-sm text-center py-4">No replies yet. Be the first to help!</p>
                         )}
-                        {post.comments.map((comment) => (
+                        {post.comments.map((comment: Comment) => (
                           <div key={comment.id} className="flex gap-4">
-                            <div className={`w-1 rounded-full ${comment.author.is_expert ? 'bg-blue-400' : 'bg-slate-200'}`} />
+                            <div className={`w-1 rounded-full ${comment.author.isExpert ? 'bg-blue-400' : 'bg-slate-200'}`} />
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className={`text-xs font-black ${comment.author.is_expert ? 'text-blue-600' : 'text-slate-900'}`}>
-                                  {comment.author.full_name}
+                                <span className={`text-xs font-black ${comment.author.isExpert ? 'text-blue-600' : 'text-slate-900'}`}>
+                                  {comment.author.fullName}
                                 </span>
-                                {comment.author.is_expert && (
+                                {comment.author.isExpert && (
                                   <ShieldCheck className="w-3 h-3 text-blue-500" />
                                 )}
                                 <span className="text-[10px] text-slate-400 font-medium">
@@ -326,10 +269,10 @@ const ForumPage: React.FC = () => {
                         />
                         <button 
                           onClick={() => handleAddComment(post.id)}
-                          disabled={!user || commentingPost === post.id}
+                          disabled={!user}
                           className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors disabled:opacity-50"
                         >
-                          {commentingPost === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                          <Send className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

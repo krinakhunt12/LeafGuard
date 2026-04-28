@@ -3,9 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { User, Mail, Lock, Loader2, ArrowRight, Leaf, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../api';
 
 const Signup: React.FC = () => {
-  const [formData, setFormData] = useState({ full_name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ fullName: '', email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -13,7 +14,7 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/signup', {
+      const response = await fetch(`${API_BASE_URL}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -88,7 +89,7 @@ const Signup: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {field('full_name', 'Full name', <User className="w-4 h-4" />, 'text', 'John Doe', '0.05')}
+            {field('fullName', 'Full name', <User className="w-4 h-4" />, 'text', 'John Doe', '0.05')}
             {field('email', 'Email address', <Mail className="w-4 h-4" />, 'email', 'name@example.com', '0.1')}
             {field('password', 'Password', <Lock className="w-4 h-4" />, 'password', 'Min. 8 characters', '0.15')}
 

@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface User {
-  id: number;
-  full_name: string;
-  email: string;
-  is_expert: boolean;
-}
+import { API_BASE_URL, type User } from '../api';
 
 interface AuthContextType {
   user: User | null;
@@ -20,14 +14,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(localStorage.getItem('leafguard_token'));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyToken = async () => {
       if (token) {
         try {
-          const response = await fetch('http://127.0.0.1:8000/users/me', {
+          const response = await fetch(`${API_BASE_URL}/users/me`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -51,13 +45,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [token]);
 
   const login = (newToken: string, userData: User) => {
-    localStorage.setItem('token', newToken);
+    localStorage.setItem('leafguard_token', newToken);
     setToken(newToken);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('leafguard_token');
     setToken(null);
     setUser(null);
   };

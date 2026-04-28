@@ -5,6 +5,8 @@ import { Mail, Lock, Loader2, ArrowRight, Leaf } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+import { API_BASE_URL } from '../api';
+
 const Login: React.FC = () => {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -16,19 +18,19 @@ const Login: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/login', {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, full_name: '' }),
+        body: JSON.stringify({ email, password, fullName: '' }),
       });
       const data = await response.json();
       if (response.ok) {
-        const userRes  = await fetch('http://127.0.0.1:8000/users/me', {
+        const userRes  = await fetch(`${API_BASE_URL}/users/me`, {
           headers: { Authorization: `Bearer ${data.access_token}` },
         });
         const userData = await userRes.json();
         login(data.access_token, userData);
-        toast.success(`Welcome back, ${userData.full_name}!`);
+        toast.success(`Welcome back, ${userData.fullName}!`);
         navigate('/analyze');
       } else {
         toast.error(data.detail || 'Invalid credentials');

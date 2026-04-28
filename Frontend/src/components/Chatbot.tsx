@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2, Sparkles, Mic, MicOff, Languages } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 interface Message {
   text: string;
   sender: 'user' | 'bot';
 }
+
+import { useChat } from '../api';
 
 export const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,12 +14,11 @@ export const Chatbot: React.FC = () => {
     { text: "Hello! I am your LeafGuard Agricultural Assistant. How can I help you with your crops today?", sender: 'bot' }
   ]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { mutate: sendMessage, isPending: isLoading } = useChat();
   const [isRecording, setIsRecording] = useState(false);
   const [selectedLang, setSelectedLang] = useState('en-IN');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
-  const { i18n } = useTranslation();
 
   const languages = [
     { code: 'en-IN', name: 'English', flag: '🇬🇧' },
@@ -91,21 +91,15 @@ export const Chatbot: React.FC = () => {
     const userMessage = input.trim();
     setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
     setInput('');
-    setIsLoading(true);
 
-    try {
-      const response = await fetch('http://127.0.0.1:8000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, language: selectedLang })
-      });
-      const data = await response.json();
-      setMessages(prev => [...prev, { text: data.response, sender: 'bot' }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { text: "I'm having trouble connecting to my brain. Please check your internet or try again later.", sender: 'bot' }]);
-    } finally {
-      setIsLoading(false);
-    }
+    sendMessage({ message: userMessage, language: selectedLang }, {
+      onSuccess: (data) => {
+        setMessages(prev => [...prev, { text: data.response, sender: 'bot' }]);
+      },
+      onError: () => {
+        setMessages(prev => [...prev, { text: "I'm having trouble connecting to my brain. Please check your internet or try again later.", sender: 'bot' }]);
+      }
+    });
   };
 
   return (

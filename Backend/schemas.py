@@ -5,7 +5,7 @@ from datetime import datetime
 # User Schemas
 class UserBase(BaseModel):
     email: EmailStr
-    full_name: str
+    fullName: str
 
 class UserCreate(UserBase):
     password: str
@@ -13,7 +13,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
-    is_expert: bool
+    isExpert: bool
     created_at: datetime
 
     class Config:

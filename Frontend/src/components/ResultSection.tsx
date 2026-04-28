@@ -7,16 +7,10 @@ import { useState } from 'react';
 import { generatePdf } from '../lib/generatePdf';
 import toast from 'react-hot-toast';
 
-interface ResultData {
-    diseaseName: string;
-    confidence: number;
-    description: string;
-    treatments: string[];
-    isHealthy: boolean;
-}
+import { type Diagnosis } from '../api';
 
 interface ResultSectionProps {
-    result: ResultData | null;
+    result: Diagnosis | null | undefined;
     previewUrl?: string | null;
 }
 

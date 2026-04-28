@@ -30,9 +30,12 @@ export const Navbar = () => {
         ...(user ? [{ to: '/dashboard', label: 'Dashboard' }] : []),
     ];
 
+    const isHome = location.pathname === '/';
+    const shouldShowSolid = isScrolled || !isHome;
+
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-            isScrolled
+            shouldShowSolid
                 ? 'bg-white/95 backdrop-blur-md border-b border-slate-100 py-3'
                 : 'bg-transparent py-5'
         }`}>
@@ -72,7 +75,7 @@ export const Navbar = () => {
 
                     {user ? (
                         <div className="flex items-center gap-3">
-                            <span className="text-sm font-medium text-slate-700">Hi, {user.full_name.split(' ')[0]}</span>
+                            <span className="text-sm font-medium text-slate-700">Hi, {user.fullName.split(' ')[0]}</span>
                             <Button variant="ghost" size="sm" onClick={logout}>Logout</Button>
                         </div>
                     ) : (
@@ -137,7 +140,7 @@ export const Navbar = () => {
                             <div className="pt-3 grid grid-cols-2 gap-2.5 px-1">
                                 {user ? (
                                     <Button variant="ghost" className="col-span-2 justify-start" onClick={logout}>
-                                        Logout ({user.full_name})
+                                        Logout ({user.fullName})
                                     </Button>
                                 ) : (
                                     <>

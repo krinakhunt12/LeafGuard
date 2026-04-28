@@ -1,20 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-interface Diagnosis {
-  id: number;
-  disease_name: string;
-  confidence: number;
-  description: string;
-  treatments: string[];
-  is_healthy: boolean;
-  created_at: string;
-}
-
-interface User {
-  full_name: string;
-  email: string;
-}
+import { type Diagnosis, type User } from '../api';
 
 export const generateHealthCertificate = async (history: Diagnosis[], user: User | null) => {
   const doc = new jsPDF();
@@ -75,7 +62,7 @@ export const generateHealthCertificate = async (history: Diagnosis[], user: User
   doc.text('CERTIFICATE HOLDER', margin + 10, 62);
   
   doc.setFontSize(16);
-  doc.text(user?.full_name || 'Valued Farmer', margin + 10, 72);
+  doc.text(user?.fullName || 'Valued Farmer', margin + 10, 72);
   
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
@@ -84,7 +71,7 @@ export const generateHealthCertificate = async (history: Diagnosis[], user: User
 
   // Summary Statistics
   const totalScans = history.length;
-  const healthyScans = history.filter(d => d.is_healthy).length;
+  const healthyScans = history.filter(d => d.isHealthy).length;
   const healthRate = totalScans > 0 ? Math.round((healthyScans / totalScans) * 100) : 0;
 
   doc.setFontSize(12);
@@ -175,10 +162,10 @@ export const generateHealthCertificate = async (history: Diagnosis[], user: User
     startY: 60,
     head: [['DATE', 'DIAGNOSIS', 'CONFIDENCE', 'STATUS']],
     body: history.map(item => [
-      new Date(item.created_at).toLocaleDateString(),
-      item.disease_name,
+      new Date(item.timestamp).toLocaleDateString(),
+      item.diseaseName,
       `${Math.round(item.confidence)}%`,
-      item.is_healthy ? 'HEALTHY' : 'DISEASED'
+      item.isHealthy ? 'HEALTHY' : 'DISEASED'
     ]),
     headStyles: {
       fillColor: darkColor,
@@ -219,8 +206,8 @@ export const generateHealthCertificate = async (history: Diagnosis[], user: User
     recentHistory.forEach((item, i) => {
       const barX = chartX + (i * (chartW / 10)) + 2;
       const barH = (item.confidence / 100) * chartH;
-      const color: [number, number, number] = item.is_healthy ? [22, 163, 74] : [220, 38, 38];
-      const lightColor: [number, number, number] = item.is_healthy ? [220, 252, 231] : [254, 226, 226];
+      const color: [number, number, number] = item.isHealthy ? [22, 163, 74] : [220, 38, 38];
+      const lightColor: [number, number, number] = item.isHealthy ? [220, 252, 231] : [254, 226, 226];
       
       doc.setFillColor(lightColor[0], lightColor[1], lightColor[2]);
       doc.rect(barX, chartY - barH, barW, barH, 'F');
@@ -278,9 +265,9 @@ export const generateHealthCertificate = async (history: Diagnosis[], user: User
   doc.line(pageWidth - margin - 60, 205, pageWidth - margin, 205);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'italic');
-  doc.text(user?.full_name || 'Farmer Signature', pageWidth - margin - 60, 210);
+  doc.text(user?.fullName || 'Farmer Signature', pageWidth - margin - 60, 210);
 
   addFooter(3);
 
-  doc.save(`LeafGuard_Health_Certificate_${user?.full_name?.replace(/\s/g, '_') || 'Farmer'}.pdf`);
+  doc.save(`LeafGuard_Health_Certificate_${user?.fullName?.replace(/\s/g, '_') || 'Farmer'}.pdf`);
 };

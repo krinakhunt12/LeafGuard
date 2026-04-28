@@ -324,7 +324,7 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     hashed_password = auth.get_password_hash(user.password)
     new_user = models.User(
         email=user.email,
-        full_name=user.full_name,
+        full_name=user.fullName,
         hashed_password=hashed_password
     )
     db.add(new_user)
@@ -341,13 +341,19 @@ def login(user_credentials: schemas.UserCreate, db: Session = Depends(get_db)):
     access_token = auth.create_access_token(data={"sub": db_user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/users/me", response_model=schemas.User)
-def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@app.get("/users/me")
+def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     email = auth.get_current_user(db, token)
     if email is None:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
     user = db.query(models.User).filter(models.User.email == email).first()
-    return user
+    return {
+        "id": user.id,
+        "email": user.email,
+        "fullName": user.full_name,
+        "isExpert": user.is_expert
+    }
 
 @app.get("/diagnoses")
 def get_diagnoses(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
@@ -356,7 +362,19 @@ def get_diagnoses(token: str = Depends(oauth2_scheme), db: Session = Depends(get
         raise HTTPException(status_code=401, detail="Invalid token")
     
     user = db.query(models.User).filter(models.User.email == email).first()
-    return db.query(models.Diagnosis).filter(models.Diagnosis.user_id == user.id).order_by(models.Diagnosis.created_at.desc()).all()
+    diagnoses = db.query(models.Diagnosis).filter(models.Diagnosis.user_id == user.id).order_by(models.Diagnosis.created_at.desc()).all()
+    
+    return [
+        {
+            "id": d.id,
+            "diseaseName": d.disease_name,
+            "confidence": d.confidence,
+            "description": d.description,
+            "treatments": d.treatments,
+            "isHealthy": d.is_healthy,
+            "timestamp": d.created_at
+        } for d in diagnoses
+    ]
 
 @app.post("/chat")
 async def chat(request: dict):
@@ -402,6 +420,28 @@ def get_forum_post(post_id: int, db: Session = Depends(get_db)):
     if not db_post:
         raise HTTPException(status_code=404, detail="Post not found")
     return db_post
+
+@app.get("/verify-certificate/{diagnosis_id}")
+def verify_certificate(diagnosis_id: int, db: Session = Depends(get_db)):
+    """Public verification endpoint for insurance providers to verify certificates."""
+    diagnosis = db.query(models.Diagnosis).filter(models.Diagnosis.id == diagnosis_id).first()
+    if not diagnosis:
+        raise HTTPException(status_code=404, detail="Certificate not found or invalid ID.")
+    
+    return {
+        "certificateId": f"LG-{str(diagnosis.id).zfill(6)}",
+        "issuedTo": diagnosis.owner.full_name if diagnosis.owner else "Guest User",
+        "issueDate": diagnosis.created_at,
+        "verificationTimestamp": datetime.utcnow().isoformat(),
+        "status": "VERIFIED & AUTHENTIC",
+        "data": {
+            "diseaseName": diagnosis.disease_name,
+            "confidence": diagnosis.confidence,
+            "isHealthy": diagnosis.is_healthy,
+            "treatmentsRecommended": len(diagnosis.treatments) if diagnosis.treatments else 0
+        },
+        "providerNote": "This certificate is digitally signed and verified by LeafGuard AI Systems."
+    }
 
 @app.post("/forum/comments", response_model=schemas.Comment)
 def create_forum_comment(

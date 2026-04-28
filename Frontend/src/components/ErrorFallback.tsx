@@ -1,12 +1,11 @@
 import React from 'react';
 import { AlertTriangle, RotateCcw, Home } from 'lucide-react';
 
-interface ErrorFallbackProps {
-  error: Error;
-  resetErrorBoundary: () => void;
-}
+import type { FallbackProps } from 'react-error-boundary';
 
-export const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => {
+export const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const isDev = (import.meta as any).env?.DEV;
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
       <div className="max-w-md w-full bg-white border border-slate-200 rounded-lg p-8 text-center">
@@ -16,7 +15,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorB
         
         <h1 className="text-2xl font-semibold text-slate-900 mb-2">Something went wrong</h1>
         <p className="text-slate-600 mb-8 leading-relaxed">
-          {error.message || "An unexpected error occurred. We've been notified and are working to fix it."}
+          {errorMessage || "An unexpected error occurred. We've been notified and are working to fix it."}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -36,7 +35,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorB
           </a>
         </div>
 
-        {process.env.NODE_ENV === 'development' && (
+        {isDev && error instanceof Error && (
           <div className="mt-8 text-left p-4 bg-slate-100 rounded border border-slate-200 overflow-auto max-h-40">
             <p className="text-xs font-mono text-slate-500 whitespace-pre-wrap">
               {error.stack}

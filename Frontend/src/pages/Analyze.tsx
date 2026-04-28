@@ -1,65 +1,36 @@
 import { useState, lazy, Suspense } from 'react';
 import { UploadSkeleton, ResultSkeleton } from '../components/PageSkeleton';
 import { toast } from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
+import { usePredict } from '../api';
 
 const UploadSection = lazy(() => import('../components/UploadSection').then(module => ({ default: module.UploadSection })));
 const ResultSection = lazy(() => import('../components/ResultSection').then(module => ({ default: module.ResultSection })));
 
-interface ResultData {
-    diseaseName: string;
-    confidence: number;
-    description: string;
-    treatments: string[];
-    isHealthy: boolean;
-}
-
 export default function Analyze() {
-    const { token } = useAuth();
-    const [isPredicting, setIsPredicting] = useState(false);
-    const [result, setResult] = useState<ResultData | null>(null);
+    const { mutate: predict, isPending: isPredicting, data: result } = usePredict();
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const handleAnalyze = async (file: File, imgPreviewUrl: string) => {
-        setIsPredicting(true);
-        setResult(null);
         setPreviewUrl(imgPreviewUrl);
 
-        // Simulated network delay
-        await new Promise(resolve => setTimeout(resolve, 2500));
-
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            const response = await fetch('http://127.0.0.1:8000/predict', {
-                method: 'POST',
-                headers: {
-                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-                },
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Failed to analyze leaf');
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        predict(formData, {
+            onSuccess: () => {
+                toast.success('Analysis complete!');
+                setTimeout(() => {
+                    const resultElement = document.getElementById('result-anchor');
+                    if (resultElement) {
+                        resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            },
+            onError: (error: any) => {
+                console.error('Error analyzing leaf:', error);
+                toast.error(error.message || 'Something went wrong. Please check if the backend is running.');
             }
-
-            const data: ResultData = await response.json();
-            setResult(data);
-            toast.success('Analysis complete!');
-
-            setTimeout(() => {
-                const resultElement = document.getElementById('result-anchor');
-                if (resultElement) {
-                    resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        } catch (error: any) {
-            console.error('Error analyzing leaf:', error);
-            toast.error(error.message || 'Something went wrong. Please check if the backend is running.');
-        } finally {
-            setIsPredicting(false);
-        }
+        });
     };
 
     return (

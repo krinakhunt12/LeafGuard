@@ -1,13 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
-interface ReportData {
-    diseaseName: string;
-    confidence: number;
-    description: string;
-    treatments: string[];
-    isHealthy: boolean;
-}
+import type { Diagnosis } from '../api';
 
 async function toDataUrl(blobUrl: string): Promise<string> {
     try {
@@ -22,7 +15,7 @@ async function toDataUrl(blobUrl: string): Promise<string> {
     } catch { return ''; }
 }
 
-function buildReportNode(data: ReportData, imgDataUrl: string, date: string): HTMLDivElement {
+function buildReportNode(data: Diagnosis, imgDataUrl: string, date: string): HTMLDivElement {
     const healthy     = data.isHealthy;
     const accent      = healthy ? '#16a34a' : '#dc2626';
     const accentLight = healthy ? '#f0fdf4' : '#fff1f2';
@@ -228,7 +221,7 @@ function buildReportNode(data: ReportData, imgDataUrl: string, date: string): HT
     return wrapper;
 }
 
-export async function generatePdf(data: ReportData, previewUrl: string | null | undefined): Promise<void> {
+export async function generatePdf(data: Diagnosis, previewUrl: string | null | undefined): Promise<void> {
     const imgDataUrl = previewUrl ? await toDataUrl(previewUrl) : '';
     const date = new Date().toLocaleString('en-IN', {
         year: 'numeric', month: 'long', day: 'numeric',

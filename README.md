@@ -8,6 +8,8 @@ LeafGuard is a state-of-the-art deep learning application designed to help farme
 
 - **Instant Diagnosis**: High-accuracy detection for 23 different plant disease classes.
 - **Detailed Insights**: Get descriptions of the disease and actionable treatment steps.
+- **AI Health Certificates**: Generate professional PDF reports with diagnosis history for legal and export use.
+- **Insurance Portal**: A secure verification service for insurance providers to validate crop health data.
 - **Premium UI/UX**: Built with a modern, responsive interface using React and Tailwind CSS.
 - **Developer-Friendly**: Clean FastAPI backend with a clear separation of concerns.
 

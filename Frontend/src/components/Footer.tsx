@@ -74,6 +74,7 @@ export const Footer = () => {
                         <h4 className="font-semibold text-slate-900 mb-5 text-sm">Resources</h4>
                         <ul className="space-y-3 text-sm text-slate-500">
                             {[
+                                { to: '/insurance-portal', label: 'Insurance Portal' },
                                 { to: '/api-docs', label: 'API Documentation' },
                                 { to: '/privacy',  label: 'Privacy Policy' },
                                 { to: '/terms',    label: 'Terms of Service' },
